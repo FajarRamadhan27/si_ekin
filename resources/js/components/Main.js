@@ -5,21 +5,12 @@ import SignUp from './pages/SignUp';
 
 function Main() {
 
-    const [ initialMenu, setInitialMenu] = useState('LOGIN')
+    const [ initialMenu, setInitialMenu] = useState('SIGN_IN')
 
     switch(initialMenu) {
-        case 'SIGN_IN':
-            return (
-                <SignIn uiAttr={{ setInitialMenu }}/>
-            );
-        case 'SIGN_UP':
-            return (
-                <SignUp uiAttr={{ setInitialMenu }}/>
-            );
-        default:
-            return (
-                <SignIn uiAttr={{ setInitialMenu }}/>
-            );
+        case 'SIGN_IN'  : return <SignIn uiAttr={{ setInitialMenu }}/>
+        case 'SIGN_UP'  : return <SignUp uiAttr={{ setInitialMenu }}/>
+        default         : return <SignIn uiAttr={{ setInitialMenu }}/>
     }
 }
 

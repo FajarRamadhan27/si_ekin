@@ -12,30 +12,36 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Login } from '@mui/icons-material';
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        SI-EKIN
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Copyright from '../containers/copyright';
+import { Alert } from '@mui/material';
+import Axios from 'axios';
 
 const theme = createTheme();
 
 function SignIn(props) {
 
-    const { setInitialMenu } = props.uiAttr
+  const [errorMessage, setError] = React.useState(null)
+
+  const { setInitialMenu } = props.uiAttr
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+    let email = data.get('email')
+    let password = data.get('password')
+
+    Axios.post('http://127.0.0.1:8000/api/login', { email, password }).then( response => {
+        const { status, messages, token, user } = response.data
+
+        if (status) {
+            setError(null)
+            localStorage.setItem('jwtToken', token)
+        } else {
+            setError(messages);
+        }
+
+    }).catch(e => console.log(e))
   };
 
   return (
@@ -56,7 +62,8 @@ function SignIn(props) {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            { errorMessage ? <Alert severity="warning">{ errorMessage }</Alert> : null }
             <TextField
               margin="normal"
               required
