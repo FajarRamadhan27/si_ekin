@@ -28,6 +28,9 @@
         "@emotion/react": "^11.8.2",
         "@emotion/styled": "^11.8.1",
         "@mui/icons-material": "^5.5.0",
-        "@mui/material": "^5.5.0"
+        "@mui/material": "^5.5.0",
+        "@reduxjs/toolkit": "^1.8.0",
+        "react-redux": "^7.2.6",
+        "react-router": "^6.2.2"
     }
 }

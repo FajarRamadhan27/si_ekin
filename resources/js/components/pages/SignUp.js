@@ -13,15 +13,16 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../containers/copyright';
 import Axios from 'axios';
 import { Alert } from '@mui/material';
+import SetAuthorizationToken from '../../utils/SetAuthorizationToken';
 
 const theme = createTheme();
 
 function SignUp(props) {
 
-    const [errorMessage, setError] = React.useState({email: '', password:'', name:''}),
-        [successMessage, setSuccess] = React.useState('')
+  const [errorMessage, setError] = React.useState({email: '', password:'', name:''})
 
-  const { setInitialMenu } = props.uiAttr
+  const { setInitialMenu } = props.uiAttr,
+    { setUser } = props.data
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -32,10 +33,14 @@ function SignUp(props) {
     let name = data.get('name')
 
     Axios.post('http://127.0.0.1:8000/api/register', { email, password, name }).then( response => {
-        const { status, messages } = response.data
+        const { status, messages, token, user } = response.data
 
         if (status) {
             setError({email: '', password:'', name:''})
+            localStorage.setItem('jwtToken', token)
+            localStorage.setItem('user', JSON.stringify(user))
+            SetAuthorizationToken(token)
+            setUser(user)
         } else {
             setError(messages);
         }

@@ -15,14 +15,24 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../containers/copyright';
 import { Alert } from '@mui/material';
 import Axios from 'axios';
+import SetAuthorizationToken from '../../utils/SetAuthorizationToken';
+import { SET_CURRENT_USER } from '../../helpers/constant';
 
 const theme = createTheme();
+
+export function setCurrentUser(user) {
+    return {
+        type: SET_CURRENT_USER,
+        user
+    }
+}
 
 function SignIn(props) {
 
   const [errorMessage, setError] = React.useState(null)
 
-  const { setInitialMenu } = props.uiAttr
+  const { setInitialMenu } = props.uiAttr,
+    { setUser } = props.data
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -37,6 +47,9 @@ function SignIn(props) {
         if (status) {
             setError(null)
             localStorage.setItem('jwtToken', token)
+            localStorage.setItem('user', JSON.stringify(user))
+            SetAuthorizationToken(token)
+            setUser(user)
         } else {
             setError(messages);
         }
