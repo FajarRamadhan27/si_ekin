@@ -1,40 +1,24 @@
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
-import MuiAppBar from '@mui/material/AppBar';
+import NavBar from '../containers/NavBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Container from '@mui/material/Container';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import Copyright from '../containers/copyright';
-import EmployeeTable from '../containers/EmployeeTable';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SideBar from '../containers/Sidebar';
+import MuiDrawer from '@mui/material/Drawer';
+import ToolBar from '../containers/ToolBar';
+import Copyright from '../containers/copyright';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import EmployeeMasterData from './sidebar_menus/EmployeMasterData';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_RANKING } from '../../helpers/constant';
+import AssessmentIndex from './Sidebar_menus/AssessmentIndex';
+import MyAssessment from './Sidebar_menus/MyAssessment';
+import Approval from './sidebar_menus/Approval';
+import Ranking from './sidebar_menus/Ranking';
+import MyScore from './sidebar_menus/MyScore';
 
 const drawerWidth = 240;
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -65,7 +49,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const mdTheme = createTheme();
 
 function DashboardContent(props) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(true),
+    [activeMenu, setActiveMenu] = React.useState()
 
   const { user, setUser, token, setToken } = props.uiAttr
 
@@ -77,61 +62,15 @@ function DashboardContent(props) {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px',
-            }}
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              SI-EKIN
-            </Typography>
-            <IconButton color="inherit">
-                <AccountCircleIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              color="inherit"
-              noWrap
-            >
-                { user.name }
-            </Typography>
-          </Toolbar>
-        </AppBar>
+
+        <NavBar uiAttr={{ user, toggleDrawer, open }}/>
+
         <Drawer variant="permanent" open={open}>
-          <Toolbar
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              px: [1],
-            }}
-          >
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
+          <ToolBar uiAttr={{ toggleDrawer }}/>
           <Divider />
-          <SideBar uiAttr={{ setUser, setToken}}/>
+          <SideBar uiAttr={{ setUser, setToken, setActiveMenu }}/>
         </Drawer>
+
         <Box
           component="main"
           sx={{
@@ -147,21 +86,41 @@ function DashboardContent(props) {
           <Toolbar />
 
           <Container maxWidth="100" sx={{ mt: 2, mb: 4 }}>
-            <Typography
-                sx={{ flex: '1 1 100%', mb: 1 }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
-            >
-                Data Karyawan
-            </Typography>
-            <EmployeeTable/>
+            {
+                renderActiveMenu(activeMenu)
+            }
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
+
       </Box>
     </ThemeProvider>
   );
+}
+
+function renderActiveMenu(activeMenu) {
+    switch(activeMenu) {
+        case MENU_EMPLOYEE_MASTER:
+            return <EmployeeMasterData/>
+
+        case MENU_ASSESSMENT_INDEX:
+            return <AssessmentIndex/>
+
+        case MENU_MY_ASSESSMENT:
+            return <MyAssessment/>
+
+        case MENU_APPROVAL:
+            return <Approval/>
+
+        case MENU_RANKING:
+            return <Ranking/>
+
+        case MENU_MY_SCORE:
+            return <MyScore/>
+
+        default:
+            return null
+    }
 }
 
 export default function Dashboard(props) {

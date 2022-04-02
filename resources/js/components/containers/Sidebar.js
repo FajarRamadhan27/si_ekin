@@ -8,13 +8,13 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import ApprovalIcon from '@mui/icons-material/Approval';
 import BadgeIcon from '@mui/icons-material/Badge';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import HistoryIcon from '@mui/icons-material/History';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { PowerSettingsNew } from '@mui/icons-material';
+import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_RANKING } from "../../helpers/constant";
 
 function SideBar (props) {
 
-    const { setUser, setToken } = props.uiAttr
+    const { setUser, setToken, setActiveMenu } = props.uiAttr
 
     const handleLogout = () => {
         setUser(null)
@@ -26,85 +26,91 @@ function SideBar (props) {
 
     return (
         <List component="nav">
-            <React.Fragment>
-                <ListItemButton>
-                <ListItemIcon>
-                    <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-                </ListItemButton>
-            </React.Fragment>
-
-            <Divider sx={{ my: 1 }} />
 
             <React.Fragment>
-                <ListSubheader component="div" inset>
-                Data Master
-                </ListSubheader>
-                <ListItemButton>
-                <ListItemIcon>
-                    <BadgeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Data Karyawan" />
-                </ListItemButton>
-                <ListItemButton>
-                <ListItemIcon>
-                    <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Index Penilaian" />
-                </ListItemButton>
-            </React.Fragment>
 
-            <Divider sx={{ my: 1 }} />
-
-            <React.Fragment>
-                <ListSubheader component="div" inset>
-                Assessment
-                </ListSubheader>
                 <ListItemButton>
                     <ListItemIcon>
-                    <LibraryBooksIcon />
+                        <DashboardIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Dashboard" />
+                </ListItemButton>
+
+            </React.Fragment>
+
+            <Divider sx={{ my: 1 }} />
+
+            <React.Fragment>
+                <ListSubheader component="div" inset>Data Master</ListSubheader>
+
+                <ListItemButton
+                    onClick={() => setActiveMenu(MENU_EMPLOYEE_MASTER)}
+                >
+                    <ListItemIcon>
+                        <BadgeIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Data Karyawan" />
+                </ListItemButton>
+
+                <ListItemButton
+                    onClick={() => setActiveMenu(MENU_ASSESSMENT_INDEX)}
+                >
+                    <ListItemIcon>
+                        <AssignmentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Index Penilaian" />
+                </ListItemButton>
+
+            </React.Fragment>
+
+            <Divider sx={{ my: 1 }} />
+
+            <React.Fragment>
+                <ListSubheader component="div" inset>Assessment</ListSubheader>
+
+                <ListItemButton
+                    onClick={() => setActiveMenu(MENU_MY_ASSESSMENT)}
+                >
+                    <ListItemIcon>
+                        <LibraryBooksIcon />
                     </ListItemIcon>
                     <ListItemText primary="Penilaian Saya" />
                 </ListItemButton>
-                <ListItemButton>
+
+                <ListItemButton
+                    onClick={() => setActiveMenu(MENU_APPROVAL)}
+                >
                     <ListItemIcon>
                     <ApprovalIcon />
                     </ListItemIcon>
                     <ListItemText primary="Approval" />
                 </ListItemButton>
-                <ListItemButton>
-                    <ListItemIcon>
-                    <HistoryIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="History" />
-                </ListItemButton>
-                </React.Fragment>
+
+            </React.Fragment>
 
             <Divider sx={{ my: 1 }} />
 
             <React.Fragment>
-                <ListSubheader component="div" inset>
-                Laporan
-                </ListSubheader>
-                <ListItemButton>
-                <ListItemIcon>
-                    <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Rangking" />
+                <ListSubheader component="div" inset>Laporan</ListSubheader>
+
+                <ListItemButton
+                    onClick={() => setActiveMenu(MENU_RANKING)}
+                >
+                    <ListItemIcon>
+                        <AssignmentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Rangking" />
                 </ListItemButton>
-                <ListItemButton>
-                <ListItemIcon>
-                    <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Nilai Saya" />
+
+                <ListItemButton
+                    onClick={() => setActiveMenu(MENU_MY_SCORE)}
+                >
+                    <ListItemIcon>
+                        <AssignmentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Nilai Saya" />
                 </ListItemButton>
-                <ListItemButton>
-                <ListItemIcon>
-                    <AssignmentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Rangking" />
-                </ListItemButton>
+
             </React.Fragment>
             <Divider sx={{ my: 1 }} />
 
