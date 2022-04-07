@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material"
-import EmployeeTable from "../../containers/EmployeeTable"
+import EmployeeTable from "../../containers/tables/EmployeeTable"
 
 function EmployeeMasterData() {
     return (
