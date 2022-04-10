@@ -1,4 +1,6 @@
+import Search from '../Search';
 import * as React from 'react';
+import Loading from '../Loading';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -16,15 +18,14 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
 import { Alert, Button } from '@mui/material';
-import Loading from '../Loading';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
 import { deleteEmployee, getEmployees } from '../../../utils/Axios';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -151,7 +152,7 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
 
-  const { setInputModal, numSelected, flashMessage, setFlashMessage, selected, setEmployee,setSelected } = props.uiAttr
+  const { setInputModal, numSelected, flashMessage, setFlashMessage, selected, employees, setEmployee, setSelected, setFilter } = props.uiAttr
 
   if (setFlashMessage) {
     React.useEffect(() => {
@@ -168,50 +169,48 @@ const EnhancedTableToolbar = (props) => {
   }
 
   return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
+    <>
+        { flashMessage ? <Alert severity="success" >{ flashMessage }</Alert> : null }
+        <Toolbar
+            sx={{
+                pl: { sm: 2 },
+                pr: { xs: 1, sm: 1 },
+                ...(numSelected > 0 && {
+                bgcolor: (theme) =>
+                    alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+                }),
+                display: 'flex',
+                justifyContent: 'space-between',
+                justifyItems: 'center'
+            }}
         >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-             { flashMessage ? <Alert severity="success" sx={{ mt: 2, mr: 4}}>{ flashMessage }</Alert> : null }
-        </Typography>
-      )}
+            {numSelected > 0 ? (
+                <Typography
+                    color="inherit"
+                    variant="subtitle1"
+                    component="div"
+                >
+                    {numSelected} selected
+                </Typography>
+            ) : (
+                <Search sx={{ background: '#DCDCDC' }} data={{ data: employees, setData: setEmployee, setFilter }}/>
+            )}
 
-      {numSelected > 0 ? (
-        <Tooltip onClick={handleDelete} title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Input Karyawan">
-          <IconButton onClick={() => setInputModal(true)}>
-            <DriveFileRenameOutlineIcon/>
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
+            {numSelected > 0 ? (
+                <Tooltip onClick={handleDelete} title="Delete">
+                <IconButton>
+                    <DeleteIcon />
+                </IconButton>
+                </Tooltip>
+            ) : (
+                <Tooltip title="Input Karyawan">
+                <IconButton onClick={() => setInputModal(true)}>
+                    <DriveFileRenameOutlineIcon/>
+                </IconButton>
+                </Tooltip>
+            )}
+        </Toolbar>
+    </>
   );
 };
 
@@ -219,7 +218,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function EmployeeTable(props) {
+export default function AssessmentTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -230,21 +229,22 @@ export default function EmployeeTable(props) {
   const [employees, setEmployee] = React.useState(null)
   const [flashMessage, setFlashMessage] = React.useState(null)
   const [editedRow, setEditedRow] = React.useState(null)
+  const [isFiltered, setFilter] = React.useState(false)
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = employees.map((n) => n.id);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            const newSelecteds = employees.map((n) => n.id);
+            setSelected(newSelecteds);
+            return;
+        }
+        setSelected([]);
+    };
 
     React.useEffect(() => {
         getEmployees(setEmployee)
@@ -289,13 +289,24 @@ export default function EmployeeTable(props) {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employees.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employees.length) : 0;
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar  uiAttr={{ numSelected: selected.length, setInputModal, flashMessage, setFlashMessage, selected, setSelected, setEmployee }}/>
+        <EnhancedTableToolbar
+            uiAttr={{
+                numSelected: selected.length,
+                setInputModal,
+                flashMessage,
+                setFlashMessage,
+                selected,
+                setSelected,
+                employees,
+                setEmployee,
+                setFilter
+            }}
+        />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -308,10 +319,10 @@ export default function EmployeeTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={employees.length}
+              rowCount={isFiltered ? employees.forFilter : employees.original}
             />
             <TableBody>
-              {stableSort(employees, getComparator(order, orderBy))
+              {stableSort(isFiltered ? employees.forFilter : employees.original, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
@@ -344,11 +355,11 @@ export default function EmployeeTable(props) {
                       >
                         {row.id}
                       </TableCell>
-                      <TableCell align="right">{row.name}</TableCell>
-                      <TableCell align="right">{row.no_telp}</TableCell>
-                      <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.jabatan}</TableCell>
-                      <TableCell align="right">
+                      <TableCell>{row.name}</TableCell>
+                      <TableCell>{row.no_telp}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>{row.jabatan}</TableCell>
+                      <TableCell>
                         <Button
                             onClick={() => {setInputModal(true); setEditedRow(row)}}
                             variant="contained"
@@ -375,7 +386,7 @@ export default function EmployeeTable(props) {
         <TablePagination
           rowsPerPageOptions={[10, 20, 30]}
           component="div"
-          count={employees.length}
+          count={isFiltered ? employees.forFilter.length : employees.original.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
