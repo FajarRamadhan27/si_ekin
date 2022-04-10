@@ -17,6 +17,7 @@ import MyAssessment from './Sidebar_menus/MyAssessment';
 import Approval from './sidebar_menus/Approval';
 import Ranking from './sidebar_menus/Ranking';
 import MyScore from './sidebar_menus/MyScore';
+import Home from './sidebar_menus/Home';
 
 const drawerWidth = 240;
 
@@ -119,7 +120,7 @@ function renderActiveMenu(activeMenu) {
             return <MyScore/>
 
         default:
-            return null
+            return <Home/>
     }
 }
 
