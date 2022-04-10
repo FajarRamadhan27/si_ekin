@@ -8,8 +8,9 @@ export function getEmployees(callback) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.get(`${BASE_URL}api/employee`)
         .then( response => {
-            console.log(response.data)
-            if (response.status === 200) callback(response.data)
+            if (response.status === 200) {
+                callback({ original: response.data, forFilter: response.data})
+            }
         }).catch(e => console.log(e))
 }
 

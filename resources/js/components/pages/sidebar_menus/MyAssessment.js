@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material"
+import AssessmentTable from "../../containers/tables/AssessmentTable"
 
 function MyAssessment() {
     return (
@@ -11,6 +12,7 @@ function MyAssessment() {
             >
                Penilaian Saya
             </Typography>
+            <AssessmentTable/>
         </>
     )
 }

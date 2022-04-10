@@ -11,17 +11,12 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { PowerSettingsNew } from '@mui/icons-material';
 import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_RANKING } from "../../helpers/constant";
+import ConfirmLogOutModal from "../modals/ConfirmLogOutModal";
 
 function SideBar (props) {
 
+    const [ logOutModal, setModalLogOut ] = React.useState(false)
     const { setUser, setToken, setActiveMenu } = props.uiAttr
-
-    const handleLogout = () => {
-        setUser(null)
-        setToken(null)
-        localStorage.clear('jwtToken')
-        localStorage.clear('user')
-      }
 
 
     return (
@@ -115,11 +110,16 @@ function SideBar (props) {
             <Divider sx={{ my: 1 }} />
 
             <React.Fragment>
-                <ListItemButton onClick={handleLogout}>
+                <ListItemButton onClick={() => setModalLogOut(true)}>
                     <ListItemIcon> <PowerSettingsNew /> </ListItemIcon>
                     <ListItemText primary="Logout" />
                 </ListItemButton>
             </React.Fragment>
+
+            {
+                logOutModal ? <ConfirmLogOutModal uiAttr={{ logOutModal, setModalLogOut, setUser, setToken }}/> : null
+            }
+
         </List>
     )
 }
