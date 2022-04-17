@@ -25,4 +25,5 @@ Route::middleware('sanctum')->group(function () {
     Route::post('employee', [UserController::class,         'create']);
     Route::delete('employee', [UserController::class,         'delete']);
     Route::put('employee/{id}', [UserController::class,         'update']);
+    Route::get('assessments/{period}', [UserController::class,         'getAssessments']);
 });

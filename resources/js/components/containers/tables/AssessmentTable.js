@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
+import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import CheckIcon from '@mui/icons-material/Check';
+import TableContainer from '@mui/material/TableContainer';
 import TableSortLabel from '@mui/material/TableSortLabel';
+import TablePagination from '@mui/material/TablePagination';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -20,12 +21,14 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
-import { Alert, Button } from '@mui/material';
+import { Alert, Button, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { deleteEmployee, getEmployees } from '../../../utils/Axios';
+import { deleteEmployee, getAssessments } from '../../../utils/Axios';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import { DatePicker } from '@mui/x-date-pickers';
+import moment from 'moment';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -57,40 +60,70 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'id',
+    id: 'tanggal',
     numeric: false,
-    disablePadding: true,
-    label: 'ID',
+    disablePadding: false,
+    label: 'Tanggal',
   },
   {
-    id: 'name',
-    numeric: true,
+    id: 'nama',
+    numeric: false,
     disablePadding: false,
     label: 'Nama',
   },
   {
-    id: 'no_telp',
+    id: 'karakter',
     numeric: true,
     disablePadding: false,
-    label: 'No Telp',
+    label: 'Karakter',
   },
   {
-    id: 'email',
+    id: 'absensi',
     numeric: true,
     disablePadding: false,
-    label: 'Email',
+    label: 'Absensi',
   },
   {
-    id: 'jabatan',
+    id: 'teamwork',
     numeric: true,
     disablePadding: false,
-    label: 'Jabatan',
+    label: 'Teamwork',
   },
   {
-    id: 'row_edit',
+    id: 'pencapaian',
     numeric: true,
     disablePadding: false,
-    label: 'Edit',
+    label: 'Pencapaian',
+  },
+  {
+    id: 'loyalitas',
+    numeric: true,
+    disablePadding: false,
+    label: 'Loyalitas',
+  },
+  {
+    id: 'efisiensi',
+    numeric: true,
+    disablePadding: false,
+    label: 'Efisiensi',
+  },
+  {
+    id: 'nilai_akhir',
+    numeric: true,
+    disablePadding: false,
+    label: 'Nilai Akhir',
+  },
+  {
+    id: 'catatan',
+    numeric: false,
+    disablePadding: false,
+    label: 'Catatan',
+  },
+  {
+    id: 'tampilkan_hasil',
+    numeric: false,
+    disablePadding: false,
+    label: 'Tampilkan Hasil',
   },
 ];
 
@@ -102,7 +135,7 @@ function EnhancedTableHead(props) {
   };
 
   return (
-    <TableHead>
+    <TableHead sx={{ bgcolor: '#B2B1B9'}}>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
@@ -230,6 +263,7 @@ export default function AssessmentTable(props) {
   const [flashMessage, setFlashMessage] = React.useState(null)
   const [editedRow, setEditedRow] = React.useState(null)
   const [isFiltered, setFilter] = React.useState(false)
+  const [value, setValue] = React.useState(moment(new Date()))
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -239,7 +273,7 @@ export default function AssessmentTable(props) {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = employees.map((n) => n.id);
+            const newSelecteds = employees.forFilter.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
@@ -247,7 +281,7 @@ export default function AssessmentTable(props) {
     };
 
     React.useEffect(() => {
-        getEmployees(setEmployee)
+        getAssessments(setEmployee,value.format('YYYYMM'))
     }, [])
 
     if (!employees) {
@@ -307,6 +341,21 @@ export default function AssessmentTable(props) {
                 setFilter
             }}
         />
+        <div className='flex mx-4 my-6 items-center justify-end text-sm '>
+            <DatePicker
+                wrapperClassName="date-picker"
+                views={['year', 'month']}
+                label="Pilih Periode"
+                minDate={moment(new Date('2020-01-01'))}
+                maxDate={moment(new Date('2025-12-31'))}
+                value={value}
+                onChange={(newValue) => {
+                    setValue(newValue)
+                    getAssessments(setEmployee, newValue.format('YYYYMM'))
+                }}
+                renderInput={(params) => <TextField {...params} helperText={null} />}
+            />
+        </div>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -319,7 +368,7 @@ export default function AssessmentTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={isFiltered ? employees.forFilter : employees.original}
+              rowCount={isFiltered ? employees.forFilter.length : employees.original.length}
             />
             <TableBody>
               {stableSort(isFiltered ? employees.forFilter : employees.original, getComparator(order, orderBy))
@@ -353,20 +402,28 @@ export default function AssessmentTable(props) {
                         scope="row"
                         padding="none"
                       >
-                        {row.id}
+                        {row.tanggal}
                       </TableCell>
                       <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.no_telp}</TableCell>
-                      <TableCell>{row.email}</TableCell>
-                      <TableCell>{row.jabatan}</TableCell>
+                      <TableCell>{row.karakter}</TableCell>
+                      <TableCell>{row.absensi}</TableCell>
+                      <TableCell>{row.teamwork}</TableCell>
+                      <TableCell>{row.pencapaian}</TableCell>
+                      <TableCell>{row.loyalitas}</TableCell>
+                      <TableCell>{row.efisiensi}</TableCell>
+                      <TableCell>{row.nilai_akhir}</TableCell>
+                      <TableCell>{row.catatan}</TableCell>
                       <TableCell>
-                        <Button
-                            onClick={() => {setInputModal(true); setEditedRow(row)}}
-                            variant="contained"
-                            size='small'
-                        >
-                            Edit
-                        </Button>
+                          {
+                              row.tampilkan_hasil != null ?
+                                <>
+                                  <Button>
+                                    <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 1 ? 'green' : 'gray' }}/>
+                                  </Button>
+                                  { row.tampilkan_hasil === 1 ? 'YA' : 'TIDAK' }
+                                </>
+                              : null
+                          }
                       </TableCell>
                     </TableRow>
                   );

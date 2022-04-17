@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\UserService;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -59,5 +60,36 @@ class UserController extends Controller
             ]);
 
         return response()->json(['status' => true, 'user' => $user]);
+    }
+
+    /**
+     * Get user assessments per month.
+     *
+     * @return \Illuminate\Http\Response\JSON
+     */
+    public function getAssessments($period)
+    {
+        $user = DB::table('users')
+            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
+            ->select(
+                'users.id',
+                'users.name',
+                'penilaian.id as penilaian_id',
+                'penilaian.karakter',
+                'penilaian.absensi',
+                'penilaian.teamwork',
+                'penilaian.pencapaian',
+                'penilaian.loyalitas',
+                'penilaian.efisiensi',
+                'penilaian.nilai_akhir',
+                'penilaian.catatan',
+                'penilaian.tampilkan_hasil',
+                'penilaian.tanggal'
+            )
+            ->where('penilaian.tanggal', '=', $period)
+            ->orderBy('users.name')
+            ->get();
+
+        return response()->json($user);
     }
 }
