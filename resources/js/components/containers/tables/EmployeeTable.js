@@ -102,7 +102,7 @@ function EnhancedTableHead(props) {
   };
 
   return (
-    <TableHead>
+    <TableHead sx={{ bgcolor: '#B2B1B9'}}>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
@@ -239,7 +239,7 @@ export default function EmployeeTable(props) {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = employees.map((n) => n.id);
+            const newSelecteds = employees.forFilter.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
@@ -319,7 +319,7 @@ export default function EmployeeTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={isFiltered ? employees.forFilter : employees.original}
+              rowCount={isFiltered ? employees.forFilter.length : employees.original.length}
             />
             <TableBody>
               {stableSort(isFiltered ? employees.forFilter : employees.original, getComparator(order, orderBy))

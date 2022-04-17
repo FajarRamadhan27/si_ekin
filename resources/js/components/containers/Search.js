@@ -60,7 +60,6 @@ function Search(props) {
         let filteredData = data.original.filter(data => {
             let isMatch = false
 
-            console.log(data)
             for (const key in data) {
                 if(isMatch) break
                 isMatch = data[key] ? data[key].toString().toLowerCase().includes(searchKey.toString().toLowerCase()) : false

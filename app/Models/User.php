@@ -37,4 +37,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * One user has many assessments
+     *
+     * @return Assesment
+     */
+    public function assessments()
+    {
+        return $this->hasMany(Assesment::class, 'id_user', 'id');
+    }
 }

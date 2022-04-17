@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import React, { useState } from 'react';
 import Dashboard from './pages/Dashboard';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 function Main() {
 
@@ -11,7 +13,11 @@ function Main() {
         [token, setToken] = useState(localStorage.getItem('jwtToken'))
 
     if (user) {
-        return <Dashboard uiAttr={{ user, setUser, token, setToken}}/>
+        return (
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+                <Dashboard uiAttr={{ user, setUser, token, setToken}}/>
+            </LocalizationProvider>
+        )
     } else {
         switch(initialMenu) {
             case 'SIGN_UP'  : return <SignUp uiAttr={{ setInitialMenu }} data={{ setUser }}/>
