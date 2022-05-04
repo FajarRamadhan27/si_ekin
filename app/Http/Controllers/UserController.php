@@ -92,4 +92,26 @@ class UserController extends Controller
 
         return response()->json($user);
     }
+
+    /**
+     * Get employee avatar
+     *
+     * @return \Illuminate\http\JsonResponse
+     */
+    public function getAva()
+    {
+        return asset('images/profile.jpg');
+    }
+
+    /**
+     * Get Employee detail
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDetailEmployee($id)
+    {
+        $user = User::where('id', $id)->firstOrFail();
+
+        return response()->json($user);
+    }
 }

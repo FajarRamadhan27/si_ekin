@@ -1,10 +1,9 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
 import { Alert, Divider, Grid, TextField } from '@mui/material';
-import Axios from 'axios';
 import { createEmployee, getEmployees, updateEmployee } from '../../utils/Axios';
 
 const style = {
