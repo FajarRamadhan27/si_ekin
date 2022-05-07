@@ -29,6 +29,13 @@ import { deleteEmployee, getAssessments } from '../../../utils/Axios';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import { DatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
+import styled from '@emotion/styled';
+
+const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
+   '& .MuiOutlinedInput-input': {
+        backgroundColor: 'aqua'
+   }
+}))
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -342,7 +349,7 @@ export default function AssessmentTable(props) {
             }}
         />
         <div className='flex mx-4 my-6 items-center justify-end text-sm '>
-            <DatePicker
+            <DatePickerCustom
                 wrapperClassName="date-picker"
                 views={['year', 'month']}
                 label="Pilih Periode"

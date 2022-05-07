@@ -1,10 +1,9 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
 import { Alert, Divider, Grid, TextField } from '@mui/material';
-import Axios from 'axios';
 import { createEmployee, getEmployees, updateEmployee } from '../../utils/Axios';
 
 const style = {
@@ -25,7 +24,6 @@ export default function InsertEmployeeModal(props) {
 
   const { inputModal, setInputModal, setEmployee, setFlashMessage, editedRow, setSelected, setEditedRow } = props.uiAttr
 
-  console.log(editedRow)
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -39,6 +37,7 @@ export default function InsertEmployeeModal(props) {
     if (editedRow) {
         if (email === editedRow.email && name === editedRow.name && editedRow.jabatan === jabatan && no_telp === editedRow.no_telp) {
             setError({ status: false, messages: {email : ['Tidak ada data yang dirubah'] }})
+            return
         }
         updateEmployee({email, name, jabatan, no_telp}, editedRow.id, (response) => {
             const { status } = response.data

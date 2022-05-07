@@ -1,23 +1,24 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import Home from './sidebar_menus/Home';
 import NavBar from '../containers/NavBar';
 import Toolbar from '@mui/material/Toolbar';
 import Divider from '@mui/material/Divider';
 import SideBar from '../containers/Sidebar';
 import MuiDrawer from '@mui/material/Drawer';
 import ToolBar from '../containers/ToolBar';
-import Copyright from '../containers/copyright';
-import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
-import EmployeeMasterData from './sidebar_menus/EmployeMasterData';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_RANKING } from '../../helpers/constant';
-import AssessmentIndex from './Sidebar_menus/AssessmentIndex';
-import MyAssessment from './Sidebar_menus/MyAssessment';
-import Approval from './sidebar_menus/Approval';
 import Ranking from './sidebar_menus/Ranking';
 import MyScore from './sidebar_menus/MyScore';
-import Home from './sidebar_menus/Home';
+import Profile from './sidebar_menus/Profile';
+import Copyright from '../containers/copyright';
+import Container from '@mui/material/Container';
+import Approval from './sidebar_menus/Approval';
+import CssBaseline from '@mui/material/CssBaseline';
+import MyAssessment from './Sidebar_menus/MyAssessment';
+import AssessmentIndex from './Sidebar_menus/AssessmentIndex';
+import EmployeeMasterData from './sidebar_menus/EmployeMasterData';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from '../../helpers/constant';
 
 const drawerWidth = 240;
 
@@ -87,9 +88,7 @@ function DashboardContent(props) {
           <Toolbar />
 
           <Container maxWidth="100" sx={{ mt: 2, mb: 4 }}>
-            {
-                renderActiveMenu(activeMenu)
-            }
+            {   renderActiveMenu(activeMenu, user)  }
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
@@ -99,7 +98,7 @@ function DashboardContent(props) {
   );
 }
 
-function renderActiveMenu(activeMenu) {
+function renderActiveMenu(activeMenu, user) {
     switch(activeMenu) {
         case MENU_EMPLOYEE_MASTER:
             return <EmployeeMasterData/>
@@ -119,6 +118,8 @@ function renderActiveMenu(activeMenu) {
         case MENU_MY_SCORE:
             return <MyScore/>
 
+        case MENU_PROFILE:
+            return <Profile data={{ user }}/>
         default:
             return <Home/>
     }

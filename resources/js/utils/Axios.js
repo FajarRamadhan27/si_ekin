@@ -1,5 +1,4 @@
 import Axios from "axios"
-import React from "react"
 import SetAuthorizationToken from "./SetAuthorizationToken"
 
 const BASE_URL = 'http://127.0.0.1:8000/'
@@ -26,6 +25,7 @@ export function getAssessments(callback, period) {
 }
 
 export function createEmployee(data, callback, callback2, callback3,callback4) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.post(`${BASE_URL}api/employee`, { ...data })
         .then( response => {
             const { status } = response.data
@@ -41,6 +41,7 @@ export function createEmployee(data, callback, callback2, callback3,callback4) {
 }
 
 export function deleteEmployee(ids, callback, callback2, callback3) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.delete(`${BASE_URL}api/employee`, { params: {ids} })
         .then( response => {
             const { status, messages } = response.data
@@ -55,8 +56,48 @@ export function deleteEmployee(ids, callback, callback2, callback3) {
 }
 
 export function updateEmployee(data, id, callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.put(`${BASE_URL}api/employee/${id}`, { ...data })
         .then( response => {
             callback(response)
+        }).catch(e => console.log(e))
+}
+
+export function getEmployeeAva(callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/employee/ava`)
+        .then( response => {
+            if (response.status === 200) {
+                callback(response.data)
+            }
+        }).catch(e => console.log(e))
+}
+
+export function getEmployeeDetail(callback, id) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/employee/${id}`)
+        .then( response => {
+            if (response.status === 200) {
+                callback(response.data)
+            }
+        }).catch(e => console.log(e))
+}
+
+export function resetPassword(callback, setModal, setFlashMessage,data) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    const { id }  = JSON.parse(localStorage.getItem('user'))
+
+    Axios.put(`${BASE_URL}api/employee/${id}/changePassword`, { ...data })
+        .then( response => {
+            const { status } = response.data
+            switch (status) {
+                case true:
+                    setModal(false)
+                    setFlashMessage('Password berhasil diperbarui...')
+                break;
+                case false:
+                    callback(response.data)
+                break;
+            }
         }).catch(e => console.log(e))
 }

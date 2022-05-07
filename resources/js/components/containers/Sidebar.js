@@ -1,5 +1,5 @@
-import { Divider, List } from "@mui/material"
 import * as React from 'react';
+import { Divider, List } from "@mui/material"
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -10,8 +10,9 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { PowerSettingsNew } from '@mui/icons-material';
-import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_RANKING } from "../../helpers/constant";
 import ConfirmLogOutModal from "../modals/ConfirmLogOutModal";
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from "../../helpers/constant";
 
 function SideBar (props) {
 
@@ -110,6 +111,13 @@ function SideBar (props) {
 
             </React.Fragment>
             <Divider sx={{ my: 1 }} />
+
+            <React.Fragment>
+                <ListItemButton onClick={() => setActiveMenu(MENU_PROFILE)}>
+                    <ListItemIcon> <ManageAccountsIcon /> </ListItemIcon>
+                    <ListItemText primary="Profile" />
+                </ListItemButton>
+            </React.Fragment>
 
             <React.Fragment>
                 <ListItemButton onClick={() => setModalLogOut(true)}>
