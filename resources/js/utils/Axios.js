@@ -78,8 +78,26 @@ export function getEmployeeDetail(callback, id) {
     Axios.get(`${BASE_URL}api/employee/${id}`)
         .then( response => {
             if (response.status === 200) {
-                console.log(response.data)
                 callback(response.data)
+            }
+        }).catch(e => console.log(e))
+}
+
+export function resetPassword(callback, setModal, setFlashMessage,data) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    const { id }  = JSON.parse(localStorage.getItem('user'))
+
+    Axios.put(`${BASE_URL}api/employee/${id}/changePassword`, { ...data })
+        .then( response => {
+            const { status } = response.data
+            switch (status) {
+                case true:
+                    setModal(false)
+                    setFlashMessage('Password berhasil diperbarui...')
+                break;
+                case false:
+                    callback(response.data)
+                break;
             }
         }).catch(e => console.log(e))
 }

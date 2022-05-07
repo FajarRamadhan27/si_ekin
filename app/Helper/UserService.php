@@ -32,7 +32,7 @@ class UserService {
             ],
             [
                 'email' => ['required', 'email', Rule::when($email, ['unique:users'])],
-                'password' => [Rule::when($email,['required', 'string', Password::min(8)])],
+                'password' => [Rule::when($email,['required', 'string', Password::min(6)])],
                 'name' => [Rule::when($name, ['required', 'string'])]
             ]
         );

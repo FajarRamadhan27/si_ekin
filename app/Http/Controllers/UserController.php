@@ -6,6 +6,7 @@ use App\Helper\UserService;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -113,5 +114,32 @@ class UserController extends Controller
         $user = User::where('id', $id)->firstOrFail();
 
         return response()->json($user);
+    }
+
+    /**
+     * Reset employee password
+     *
+     * @param  Request $request
+     * @param  string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function changePassword(Request $request, $id)
+    {
+        $user = User::where('id', $id)->firstOrFail();
+
+        if (!Hash::check($request->oldPassword, optional($user)->password)) {
+            return [
+                'status' => false,
+                'messages' => 'Password lama tidak sesuai!'
+            ];
+        }
+
+        $user->password = Hash::make($request->newPassword);
+        $user->save();
+
+        return [
+            'status' => true,
+            'messages' => 'Password berhasil di Perbarui.'
+        ];
     }
 }

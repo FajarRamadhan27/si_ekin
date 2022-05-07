@@ -24,7 +24,6 @@ export default function InsertEmployeeModal(props) {
 
   const { inputModal, setInputModal, setEmployee, setFlashMessage, editedRow, setSelected, setEditedRow } = props.uiAttr
 
-  console.log(editedRow)
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -38,6 +37,7 @@ export default function InsertEmployeeModal(props) {
     if (editedRow) {
         if (email === editedRow.email && name === editedRow.name && editedRow.jabatan === jabatan && no_telp === editedRow.no_telp) {
             setError({ status: false, messages: {email : ['Tidak ada data yang dirubah'] }})
+            return
         }
         updateEmployee({email, name, jabatan, no_telp}, editedRow.id, (response) => {
             const { status } = response.data
