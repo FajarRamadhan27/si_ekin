@@ -25,7 +25,7 @@ import { Alert, Button, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { deleteEmployee, getAssessments } from '../../../utils/Axios';
+import { assessmentShowYn, deleteEmployee, getAssessments } from '../../../utils/Axios';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import { DatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
@@ -192,25 +192,25 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
 
-  const { setInputModal, numSelected, flashMessage, setFlashMessage, selected, employees, setEmployee, setSelected, setFilter } = props.uiAttr
+  const { setInputModal, numSelected, flashMessage, setFlashMessage, selected, assessments, setAssessment, setSelected, setFilter } = props.uiAttr
 
-  if (setFlashMessage) {
+  if (flashMessage.type) {
     React.useEffect(() => {
         const timeout = setTimeout(() => {
-            setFlashMessage(null)
-        }, 2000)
+            setFlashMessage({ type: null, message: null})
+        }, 3000)
 
         return () => clearTimeout(timeout)
-    }, [])
+    }, [flashMessage])
   }
 
   const handleDelete = () => {
-    deleteEmployee(selected, setEmployee, setFlashMessage, setSelected)
+    deleteEmployee(selected, setAssessment, setFlashMessage, setSelected)
   }
 
   return (
     <>
-        { flashMessage ? <Alert severity="success" >{ flashMessage }</Alert> : null }
+        { flashMessage.type ? <Alert severity={flashMessage.type} >{ flashMessage.message }</Alert> : null }
         <Toolbar
             sx={{
                 pl: { sm: 2 },
@@ -233,7 +233,7 @@ const EnhancedTableToolbar = (props) => {
                     {numSelected} selected
                 </Typography>
             ) : (
-                <Search sx={{ background: '#DCDCDC' }} data={{ data: employees, setData: setEmployee, setFilter }}/>
+                <Search sx={{ background: '#DCDCDC' }} data={{ data: assessments, setData: setAssessment, setFilter }}/>
             )}
 
             {numSelected > 0 ? (
@@ -266,8 +266,8 @@ export default function AssessmentTable(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [inputModal, setInputModal] = React.useState(false)
-  const [employees, setEmployee] = React.useState(null)
-  const [flashMessage, setFlashMessage] = React.useState(null)
+  const [assessments, setAssessment] = React.useState(null)
+  const [flashMessage, setFlashMessage] = React.useState({ type: null, message: null})
   const [editedRow, setEditedRow] = React.useState(null)
   const [isFiltered, setFilter] = React.useState(false)
   const [value, setValue] = React.useState(moment(new Date()))
@@ -280,7 +280,7 @@ export default function AssessmentTable(props) {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = employees.forFilter.map((n) => n.id);
+            const newSelecteds = assessments.forFilter.map((n) => n.id);
             setSelected(newSelecteds);
             return;
         }
@@ -288,11 +288,11 @@ export default function AssessmentTable(props) {
     };
 
     React.useEffect(() => {
-        getAssessments(setEmployee,value.format('YYYYMM'))
+        getAssessments(setAssessment,value.format('YYYYMM'))
     }, [])
 
-    if (!employees) {
-        return <Loading uiAttr={{ open: employees === null }}/>
+    if (!assessments) {
+        return <Loading uiAttr={{ open: assessments === null }}/>
     }
 
   const handleClick = (event, name) => {
@@ -315,6 +315,19 @@ export default function AssessmentTable(props) {
     setSelected(newSelected);
   };
 
+  const handleButtonShowYn = (event, assessment) => {
+    event.preventDefault()
+
+    const { tampilkan_hasil, id } = assessment
+
+    assessmentShowYn(
+        setFlashMessage,
+        { id, showYn : tampilkan_hasil === 1 ? 2 : 1 },
+        setAssessment,
+        value.format('YYYYMM')
+    )
+  }
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -330,7 +343,7 @@ export default function AssessmentTable(props) {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employees.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assessments.length) : 0;
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -343,8 +356,8 @@ export default function AssessmentTable(props) {
                 setFlashMessage,
                 selected,
                 setSelected,
-                employees,
-                setEmployee,
+                assessments,
+                setAssessment,
                 setFilter
             }}
         />
@@ -358,7 +371,7 @@ export default function AssessmentTable(props) {
                 value={value}
                 onChange={(newValue) => {
                     setValue(newValue)
-                    getAssessments(setEmployee, newValue.format('YYYYMM'))
+                    getAssessments(setAssessment, newValue.format('YYYYMM'))
                 }}
                 renderInput={(params) => <TextField {...params} helperText={null} />}
             />
@@ -375,10 +388,10 @@ export default function AssessmentTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={isFiltered ? employees.forFilter.length : employees.original.length}
+              rowCount={isFiltered ? assessments.forFilter.length : assessments.original.length}
             />
             <TableBody>
-              {stableSort(isFiltered ? employees.forFilter : employees.original, getComparator(order, orderBy))
+              {stableSort(isFiltered ? assessments.forFilter : assessments.original, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
@@ -387,14 +400,13 @@ export default function AssessmentTable(props) {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.id}
                       selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
+                      <TableCell onClick={(event) => handleClick(event, row.id)} padding="checkbox">
                         <Checkbox
                           color="primary"
                           checked={isItemSelected}
@@ -411,20 +423,23 @@ export default function AssessmentTable(props) {
                       >
                         {row.tanggal}
                       </TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.karakter}</TableCell>
-                      <TableCell>{row.absensi}</TableCell>
-                      <TableCell>{row.teamwork}</TableCell>
-                      <TableCell>{row.pencapaian}</TableCell>
-                      <TableCell>{row.loyalitas}</TableCell>
-                      <TableCell>{row.efisiensi}</TableCell>
-                      <TableCell>{row.nilai_akhir}</TableCell>
-                      <TableCell>{row.catatan}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.name}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.karakter}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.absensi}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.teamwork}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.pencapaian}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.loyalitas}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.efisiensi}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
                       <TableCell>
                           {
                               row.tampilkan_hasil != null ?
                                 <>
-                                  <Button>
+                                  <Button
+                                    id='btn-showYn'
+                                    onClick={(event) => handleButtonShowYn(event, row)}
+                                  >
                                     <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 1 ? 'green' : 'gray' }}/>
                                   </Button>
                                   { row.tampilkan_hasil === 1 ? 'YA' : 'TIDAK' }
@@ -450,7 +465,7 @@ export default function AssessmentTable(props) {
         <TablePagination
           rowsPerPageOptions={[10, 20, 30]}
           component="div"
-          count={isFiltered ? employees.forFilter.length : employees.original.length}
+          count={isFiltered ? assessments.forFilter.length : assessments.original.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -461,7 +476,7 @@ export default function AssessmentTable(props) {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
-      { inputModal ? <InsertEmployeeModal uiAttr={{ inputModal, setInputModal, setEmployee, setFlashMessage, editedRow, setSelected, setEditedRow }}/> : null }
+      { inputModal ? <InsertEmployeeModal uiAttr={{ inputModal, setInputModal, setAssessment, setFlashMessage, editedRow, setSelected, setEditedRow }}/> : null }
     </Box>
   );
 }

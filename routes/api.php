@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssesmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
@@ -28,5 +29,6 @@ Route::middleware('sanctum')->group(function () {
     Route::put('employee/{id}', [UserController::class, 'update']);
     Route::get('employee/{id}', [UserController::class, 'getDetailEmployee']);
     Route::put('employee/{id}/changePassword', [UserController::class, 'changePassword']);
-    Route::get('assessments/{period}', [UserController::class, 'getAssessments']);
+    Route::get('assessments/{period}', [AssesmentController::class, 'index']);
+    Route::put('assessments/{id}/showYn', [AssesmentController::class, 'showAssessmentYn']);
 });
