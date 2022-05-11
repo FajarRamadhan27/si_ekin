@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Assesment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AssesmentController extends Controller
 {
@@ -12,9 +13,50 @@ class AssesmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($period)
     {
-        //
+        $user = DB::table('users')
+            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
+            ->select(
+                'penilaian.id',
+                'users.name',
+                'penilaian.id as penilaian_id',
+                'penilaian.karakter',
+                'penilaian.absensi',
+                'penilaian.teamwork',
+                'penilaian.pencapaian',
+                'penilaian.loyalitas',
+                'penilaian.efisiensi',
+                'penilaian.nilai_akhir',
+                'penilaian.catatan',
+                'penilaian.tampilkan_hasil',
+                'penilaian.tanggal'
+            )
+            ->where('penilaian.tanggal', '=', $period)
+            ->orderBy('users.name')
+            ->get();
+
+        return response()->json($user);
+    }
+
+    /**
+     * Show assessment to user Y/N
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function showAssessmentYn($id, Request $request)
+    {
+        $assessment = Assesment::where('id', $id)->firstOrFail();
+
+        $assessment->tampilkan_hasil = $request->showYn;
+        $assessment->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => $request->showYn === 1 ? 'Penilaian berhasil ditampilkan.' : 'Penilaian berhasil disembunyikan.',
+            'data' => $assessment
+        ]);
     }
 
     /**

@@ -101,3 +101,23 @@ export function resetPassword(callback, setModal, setFlashMessage,data) {
             }
         }).catch(e => console.log(e))
 }
+
+export function assessmentShowYn(setFlashMessage,data,setAssessments, period) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+
+    const { id, ...rest } = data
+
+    Axios.put(`${BASE_URL}api/assessments/${id}/showYn`, { ...rest })
+        .then( response => {
+            const { status } = response.data
+            switch (status) {
+                case true:
+                    getAssessments(setAssessments,period)
+                    setFlashMessage({ type: 'success', message: response.data.message})
+                break;
+                case false:
+                    console.log(response.data)
+                break;
+            }
+        }).catch(e => console.log(e))
+}
