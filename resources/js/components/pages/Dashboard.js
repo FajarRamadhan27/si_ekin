@@ -18,7 +18,8 @@ import MyAssessment from './Sidebar_menus/MyAssessment';
 import AssessmentIndex from './Sidebar_menus/AssessmentIndex';
 import EmployeeMasterData from './sidebar_menus/EmployeMasterData';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from '../../helpers/constant';
+import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from '../../helpers/constant';
+import { Route, Routes } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -88,7 +89,16 @@ function DashboardContent(props) {
           <Toolbar />
 
           <Container maxWidth="100" sx={{ mt: 2, mb: 4 }}>
-            {   renderActiveMenu(activeMenu, user)  }
+            <Routes>
+                <Route path={MENU_DASHBOARD} element={<Home/>}/>
+                <Route path={MENU_EMPLOYEE_MASTER} element={<EmployeeMasterData/>}/>
+                <Route path={MENU_ASSESSMENT_INDEX} element={<AssessmentIndex/>}/>
+                <Route path={MENU_MY_ASSESSMENT} element={<MyAssessment/>}/>
+                <Route path={MENU_APPROVAL} element={<Approval/>}/>
+                <Route path={MENU_RANKING} element={<Ranking/>}/>
+                <Route path={MENU_MY_SCORE} element={<MyScore/>}/>
+                <Route path={MENU_PROFILE} element={<Profile/>}/>
+            </Routes>
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
@@ -96,33 +106,6 @@ function DashboardContent(props) {
       </Box>
     </ThemeProvider>
   );
-}
-
-function renderActiveMenu(activeMenu, user) {
-    switch(activeMenu) {
-        case MENU_EMPLOYEE_MASTER:
-            return <EmployeeMasterData/>
-
-        case MENU_ASSESSMENT_INDEX:
-            return <AssessmentIndex/>
-
-        case MENU_MY_ASSESSMENT:
-            return <MyAssessment/>
-
-        case MENU_APPROVAL:
-            return <Approval/>
-
-        case MENU_RANKING:
-            return <Ranking/>
-
-        case MENU_MY_SCORE:
-            return <MyScore/>
-
-        case MENU_PROFILE:
-            return <Profile data={{ user }}/>
-        default:
-            return <Home/>
-    }
 }
 
 export default function Dashboard(props) {

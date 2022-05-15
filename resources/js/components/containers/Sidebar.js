@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Divider, List } from "@mui/material"
+import { useNavigate } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -16,9 +17,13 @@ import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MAS
 
 function SideBar (props) {
 
+    const navigate = useNavigate()
     const [ logOutModal, setModalLogOut ] = React.useState(false)
-    const { setUser, setToken, setActiveMenu } = props.uiAttr
+    const { setUser, setToken } = props.uiAttr
 
+    const handleSidebarClick = (path) => {
+        navigate(path)
+    }
 
     return (
         <List component="nav">
@@ -26,7 +31,7 @@ function SideBar (props) {
             <React.Fragment>
 
                 <ListItemButton
-                    onClick={() => setActiveMenu(MENU_DASHBOARD)}
+                    onClick={() => handleSidebarClick(MENU_DASHBOARD)}
                 >
                     <ListItemIcon>
                         <DashboardIcon />
@@ -42,7 +47,7 @@ function SideBar (props) {
                 <ListSubheader component="div" inset>Data Master</ListSubheader>
 
                 <ListItemButton
-                    onClick={() => setActiveMenu(MENU_EMPLOYEE_MASTER)}
+                    onClick={() => handleSidebarClick(MENU_EMPLOYEE_MASTER)}
                 >
                     <ListItemIcon>
                         <BadgeIcon />
@@ -51,7 +56,7 @@ function SideBar (props) {
                 </ListItemButton>
 
                 <ListItemButton
-                    onClick={() => setActiveMenu(MENU_ASSESSMENT_INDEX)}
+                    onClick={() => handleSidebarClick(MENU_ASSESSMENT_INDEX)}
                 >
                     <ListItemIcon>
                         <AssignmentIcon />
@@ -67,7 +72,7 @@ function SideBar (props) {
                 <ListSubheader component="div" inset>Assessment</ListSubheader>
 
                 <ListItemButton
-                    onClick={() => setActiveMenu(MENU_MY_ASSESSMENT)}
+                    onClick={() => handleSidebarClick(MENU_MY_ASSESSMENT)}
                 >
                     <ListItemIcon>
                         <LibraryBooksIcon />
@@ -76,7 +81,7 @@ function SideBar (props) {
                 </ListItemButton>
 
                 <ListItemButton
-                    onClick={() => setActiveMenu(MENU_APPROVAL)}
+                    onClick={() => handleSidebarClick(MENU_APPROVAL)}
                 >
                     <ListItemIcon>
                     <ApprovalIcon />
@@ -92,7 +97,7 @@ function SideBar (props) {
                 <ListSubheader component="div" inset>Laporan</ListSubheader>
 
                 <ListItemButton
-                    onClick={() => setActiveMenu(MENU_RANKING)}
+                    onClick={() => handleSidebarClick(MENU_RANKING)}
                 >
                     <ListItemIcon>
                         <AssignmentIcon />
@@ -101,7 +106,7 @@ function SideBar (props) {
                 </ListItemButton>
 
                 <ListItemButton
-                    onClick={() => setActiveMenu(MENU_MY_SCORE)}
+                    onClick={() => handleSidebarClick(MENU_MY_SCORE)}
                 >
                     <ListItemIcon>
                         <AssignmentIcon />
@@ -113,7 +118,7 @@ function SideBar (props) {
             <Divider sx={{ my: 1 }} />
 
             <React.Fragment>
-                <ListItemButton onClick={() => setActiveMenu(MENU_PROFILE)}>
+                <ListItemButton onClick={() => handleSidebarClick(MENU_PROFILE)}>
                     <ListItemIcon> <ManageAccountsIcon /> </ListItemIcon>
                     <ListItemText primary="Profile" />
                 </ListItemButton>

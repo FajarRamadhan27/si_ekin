@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import Dashboard from './pages/Dashboard';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { BrowserRouter } from 'react-router-dom';
 
 function Main() {
 
@@ -15,7 +16,9 @@ function Main() {
     if (user) {
         return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <Dashboard uiAttr={{ user, setUser, token, setToken}}/>
+                <BrowserRouter>
+                    <Dashboard uiAttr={{ user, setUser, token, setToken}}/>
+                </BrowserRouter>
             </LocalizationProvider>
         )
     } else {
