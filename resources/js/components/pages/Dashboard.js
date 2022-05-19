@@ -20,6 +20,7 @@ import EmployeeMasterData from './sidebar_menus/EmployeMasterData';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from '../../helpers/constant';
 import { Route, Routes } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const drawerWidth = 240;
 
@@ -52,10 +53,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const mdTheme = createTheme();
 
 function DashboardContent(props) {
+
   const [open, setOpen] = React.useState(true),
     [activeMenu, setActiveMenu] = React.useState()
 
-  const { user, setUser, token, setToken } = props.uiAttr
+  const { token, setToken } = props.uiAttr
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -66,12 +68,12 @@ function DashboardContent(props) {
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
 
-        <NavBar uiAttr={{ user, toggleDrawer, open }}/>
+        <NavBar uiAttr={{ toggleDrawer, open }}/>
 
         <Drawer variant="permanent" open={open}>
           <ToolBar uiAttr={{ toggleDrawer }}/>
           <Divider />
-          <SideBar uiAttr={{ setUser, setToken, setActiveMenu }}/>
+          <SideBar uiAttr={{ setToken, setActiveMenu }}/>
         </Drawer>
 
         <Box

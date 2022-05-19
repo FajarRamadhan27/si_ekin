@@ -18,8 +18,9 @@ import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MAS
 function SideBar (props) {
 
     const navigate = useNavigate()
+
     const [ logOutModal, setModalLogOut ] = React.useState(false)
-    const { setUser, setToken } = props.uiAttr
+    const { setToken } = props.uiAttr
 
     const handleSidebarClick = (path) => {
         navigate(path)
@@ -132,7 +133,7 @@ function SideBar (props) {
             </React.Fragment>
 
             {
-                logOutModal ? <ConfirmLogOutModal uiAttr={{ logOutModal, setModalLogOut, setUser, setToken }}/> : null
+                logOutModal ? <ConfirmLogOutModal uiAttr={{ logOutModal, setModalLogOut, setToken }}/> : null
             }
 
         </List>

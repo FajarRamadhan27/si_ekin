@@ -6,26 +6,29 @@ import Dashboard from './pages/Dashboard';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider, useSelector } from 'react-redux';
+import store from '../redux/store';
 
 function Main() {
 
     const [ initialMenu, setInitialMenu] = useState('SIGN_IN'),
-        [user, setUser] = useState(JSON.parse(localStorage.getItem('user'))),
         [token, setToken] = useState(localStorage.getItem('jwtToken'))
+
+        const user = useSelector(state => state.user.value )
 
     if (user) {
         return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
                 <BrowserRouter>
-                    <Dashboard uiAttr={{ user, setUser, token, setToken}}/>
+                    <Dashboard uiAttr={{token, setToken}}/>
                 </BrowserRouter>
             </LocalizationProvider>
         )
     } else {
         switch(initialMenu) {
-            case 'SIGN_UP'  : return <SignUp uiAttr={{ setInitialMenu }} data={{ setUser }}/>
-            default         : return <SignIn uiAttr={{ setInitialMenu }} data={{ setUser }}/>
-            case 'SIGN_IN'  : return <SignIn uiAttr={{ setInitialMenu }} data={{ setUser }}/>
+            case 'SIGN_UP'  : return <SignUp uiAttr={{ setInitialMenu }}/>
+            default         : return <SignIn uiAttr={{ setInitialMenu }}/>
+            case 'SIGN_IN'  : return <SignIn uiAttr={{ setInitialMenu }}/>
         }
     }
 }
@@ -33,5 +36,9 @@ function Main() {
 export default Main;
 
 if (document.getElementById('app')) {
-    ReactDOM.render(<Main />, document.getElementById('app'));
+    ReactDOM.render(
+    <Provider store={store}>
+        <Main />
+    </Provider>
+    , document.getElementById('app'));
 }

@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { useSelector } from "react-redux";
 import MuiAppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
 import { IconButton, Toolbar, Typography } from "@mui/material";
@@ -26,7 +27,9 @@ const AppBar = styled(MuiAppBar, {
 
 function NavBar(props) {
 
-    const { open, user, toggleDrawer } = props.uiAttr
+    const { open, toggleDrawer } = props.uiAttr
+
+    const user = useSelector(state => state.user.value)
 
     return (
         <AppBar position="absolute" open={open}>
