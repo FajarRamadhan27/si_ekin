@@ -1,31 +1,23 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { visuallyHidden } from '@mui/utils';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { Alert, Button } from '@mui/material';
+import {Button } from '@mui/material';
 import Loading from '../Loading';
-import { deleteEmployee, getEmployees } from '../../../utils/Axios';
-import Search from '../Search';
+import { getEmployees } from '../../../utils/Axios';
+import EnhancedTableToolbar from './base/EnhancedTableToolbar';
+import { useDispatch } from 'react-redux';
+import { setHeadCell, setSelectedRow } from '../../../redux/reducers/TableSlice';
+import EnhancedTableHead from './base/EnhancedTableHead';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -87,6 +79,12 @@ const headCells = [
     label: 'Jabatan',
   },
   {
+    id: 'aktifYn',
+    numeric: false,
+    disablePadding: false,
+    label: 'Aktif Y/N',
+  },
+  {
     id: 'row_edit',
     numeric: true,
     disablePadding: false,
@@ -94,133 +92,12 @@ const headCells = [
   },
 ];
 
-function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-    props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead sx={{ bgcolor: '#B2B1B9'}}>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
-const EnhancedTableToolbar = (props) => {
-
-  const { setInputModal, numSelected, flashMessage, setFlashMessage, selected, employees, setEmployee, setSelected, setFilter } = props.uiAttr
-
-  if (setFlashMessage) {
-    React.useEffect(() => {
-        const timeout = setTimeout(() => {
-            setFlashMessage(null)
-        }, 2000)
-
-        return () => clearTimeout(timeout)
-    }, [])
-  }
-
-  const handleDelete = () => {
-    deleteEmployee(selected, setEmployee, setFlashMessage, setSelected)
-  }
-
-  return (
-    <>
-        { flashMessage ? <Alert severity="success" >{ flashMessage }</Alert> : null }
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                bgcolor: (theme) =>
-                    alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-                display: 'flex',
-                justifyContent: 'space-between',
-                justifyItems: 'center'
-            }}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div"
-                >
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Search sx={{ background: '#DCDCDC' }} data={{ data: employees, setData: setEmployee, setFilter }}/>
-            )}
-
-            {numSelected > 0 ? (
-                <Tooltip onClick={handleDelete} title="Delete">
-                <IconButton>
-                    <DeleteIcon />
-                </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Input Karyawan">
-                <IconButton onClick={() => setInputModal(true)}>
-                    <DriveFileRenameOutlineIcon/>
-                </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
-    </>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
-
 export default function EmployeeTable(props) {
+
+  const dispatch = useDispatch()
+
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('id');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -228,8 +105,9 @@ export default function EmployeeTable(props) {
   const [inputModal, setInputModal] = React.useState(false)
   const [employees, setEmployee] = React.useState(null)
   const [flashMessage, setFlashMessage] = React.useState(null)
-  const [editedRow, setEditedRow] = React.useState(null)
   const [isFiltered, setFilter] = React.useState(false)
+
+  dispatch(setHeadCell(headCells))
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -290,6 +168,12 @@ export default function EmployeeTable(props) {
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - employees.length) : 0;
+
+  const handleButtonEditRow = (event, row) => {
+      event.stopPropagation()
+      setInputModal(true)
+      dispatch(setSelectedRow(row))
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -360,8 +244,22 @@ export default function EmployeeTable(props) {
                       <TableCell>{row.email}</TableCell>
                       <TableCell>{row.jabatan}</TableCell>
                       <TableCell>
+                          {
+                              row.aktif_yn &&
+                                <>
+                                  <Button
+                                    id='btn-showYn'
+                                    onClick={(event) => handleButtonShowYn(event, row)}
+                                  >
+                                    <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 1 ? 'green' : 'gray' }}/>
+                                  </Button>
+                                  { row.aktif_yn === 1 ? 'YA' : 'TIDAK' }
+                                </>
+                          }
+                      </TableCell>
+                      <TableCell>
                         <Button
-                            onClick={() => {setInputModal(true); setEditedRow(row)}}
+                            onClick={(event) => handleButtonEditRow(event, row)}
                             variant="contained"
                             size='small'
                         >
@@ -397,7 +295,7 @@ export default function EmployeeTable(props) {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
-      { inputModal ? <InsertEmployeeModal uiAttr={{ inputModal, setInputModal, setEmployee, setFlashMessage, editedRow, setSelected, setEditedRow }}/> : null }
+      { inputModal && <InsertEmployeeModal uiAttr={{ inputModal, setInputModal, setEmployee, setFlashMessage, setSelected }}/> }
     </Box>
   );
 }

@@ -434,7 +434,7 @@ export default function AssessmentTable(props) {
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
                       <TableCell>
                           {
-                              row.tampilkan_hasil != null ?
+                              row.tampilkan_hasil &&
                                 <>
                                   <Button
                                     id='btn-showYn'
@@ -444,7 +444,6 @@ export default function AssessmentTable(props) {
                                   </Button>
                                   { row.tampilkan_hasil === 1 ? 'YA' : 'TIDAK' }
                                 </>
-                              : null
                           }
                       </TableCell>
                     </TableRow>

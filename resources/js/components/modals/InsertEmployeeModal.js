@@ -5,6 +5,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Alert, Divider, Grid, TextField } from '@mui/material';
 import { createEmployee, getEmployees, updateEmployee } from '../../utils/Axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedRow } from '../../redux/reducers/TableSlice';
 
 const style = {
   position: 'absolute',
@@ -20,9 +22,12 @@ const style = {
 
 export default function InsertEmployeeModal(props) {
 
+  const dispatch = useDispatch()
+  const { selectedRow } = useSelector(state => state.table)
   const [errorMessage, setError] = React.useState();
+  const [newVal, setNewVal] = React.useState(selectedRow)
 
-  const { inputModal, setInputModal, setEmployee, setFlashMessage, editedRow, setSelected, setEditedRow } = props.uiAttr
+  const { inputModal, setInputModal, setEmployee, setFlashMessage, setSelected } = props.uiAttr
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -34,12 +39,12 @@ export default function InsertEmployeeModal(props) {
     let jabatan = data.get('jabatan')
     let no_telp = data.get('no_telp')
 
-    if (editedRow) {
-        if (email === editedRow.email && name === editedRow.name && editedRow.jabatan === jabatan && no_telp === editedRow.no_telp) {
+    if (selectedRow) {
+        if (email === selectedRow.email && name === selectedRow.name && selectedRow.jabatan === jabatan && no_telp === selectedRow.no_telp) {
             setError({ status: false, messages: {email : ['Tidak ada data yang dirubah'] }})
             return
         }
-        updateEmployee({email, name, jabatan, no_telp}, editedRow.id, (response) => {
+        updateEmployee({email, name, jabatan, no_telp}, selectedRow.id, (response) => {
             const { status } = response.data
 
             if (status === true) {
@@ -48,7 +53,7 @@ export default function InsertEmployeeModal(props) {
                 getEmployees(setEmployee)
                 setSelected([])
                 setFlashMessage('Data Berhasil diperbarui...')
-                setEditedRow(null)
+                dispatch(setSelectedRow(null))
             } else {
                 setError(response.data)
             }
@@ -56,6 +61,11 @@ export default function InsertEmployeeModal(props) {
     } else {
         createEmployee({email, name, jabatan, no_telp}, setInputModal, setEmployee, setError, setFlashMessage)
     }
+  }
+
+  const handleTextChange = (event, key) => {
+    const { [key]:changedVal, ...rest} = newVal
+    setNewVal({ [key]:event.target.value, ...rest})
   }
 
   return (
@@ -96,7 +106,8 @@ export default function InsertEmployeeModal(props) {
                     name="name"
                     label="Nama"
                     fullWidth
-                    value={ editedRow?.name }
+                    value={ newVal?.name }
+                    onChange={(event) => {handleTextChange(event, 'name')}}
                 />
             </Grid>
             <Grid item xs={12} mt={2}>
@@ -106,7 +117,8 @@ export default function InsertEmployeeModal(props) {
                     name="no_telp"
                     label="Nomor Telepon"
                     fullWidth
-                    value={ editedRow?.no_telp }
+                    value={ newVal?.no_telp }
+                    onChange={(event) => {handleTextChange(event, 'no_telp')}}
                 />
             </Grid>
             <Grid item xs={12} mt={2}>
@@ -116,7 +128,8 @@ export default function InsertEmployeeModal(props) {
                     name="email"
                     label="Email"
                     fullWidth
-                    value={ editedRow?.email }
+                    value={ newVal?.email }
+                    onChange={(event) => {handleTextChange(event, 'email')}}
                 />
             </Grid>
             <Grid item xs={12} mt={2}>
@@ -126,7 +139,8 @@ export default function InsertEmployeeModal(props) {
                     name="jabatan"
                     label="Jabatan"
                     fullWidth
-                    value={ editedRow?.jabatan }
+                    value={ newVal?.jabatan }
+                    onChange={(event) => {handleTextChange(event, 'jabatan')}}
                 />
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
