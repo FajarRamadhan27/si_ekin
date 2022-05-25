@@ -13,13 +13,14 @@ class UserService {
 
     public $email, $password, $name, $jabatan, $no_telp;
 
-    public function __construct($email, $password, $name = '', $jabatan='', $no_telp='')
+    public function __construct($email, $password, $name, $aktif_yn, $jabatan='', $no_telp='')
     {
         $this->email = $email;
         $this->password = $password;
         $this->name = $name;
         $this->jabatan = $jabatan;
         $this->no_telp = $no_telp;
+        $this->aktif_yn = $aktif_yn;
     }
 
     public function validateInput($email=true, $name=true)
@@ -55,7 +56,8 @@ class UserService {
                 'id' => Carbon::now()->format('YmdHms'),
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
-                'name' => $this->name
+                'name' => $this->name,
+                'aktif_yn' => $this->aktif_yn
             ]
         );
 

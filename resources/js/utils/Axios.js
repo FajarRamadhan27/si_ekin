@@ -121,3 +121,21 @@ export function assessmentShowYn(setFlashMessage,data,setAssessments, period) {
             }
         }).catch(e => console.log(e))
 }
+
+export function employeeActiveYn(userId, callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+
+    Axios.put(`${BASE_URL}api/employee/${userId}/activeYn`)
+        .then( response => {
+            const { status } = response.data
+            switch(status) {
+                case true:
+                    callback()
+                    break;
+                default:
+                    console.log(response.data)
+                    break
+            }
+        })
+        .catch( e => console.log(e))
+}

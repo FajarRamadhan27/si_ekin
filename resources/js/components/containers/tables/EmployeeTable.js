@@ -6,6 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import CheckIcon from '@mui/icons-material/Check';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -13,7 +14,7 @@ import Switch from '@mui/material/Switch';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
 import {Button } from '@mui/material';
 import Loading from '../Loading';
-import { getEmployees } from '../../../utils/Axios';
+import { employeeActiveYn, getEmployees } from '../../../utils/Axios';
 import EnhancedTableToolbar from './base/EnhancedTableToolbar';
 import { useDispatch } from 'react-redux';
 import { setHeadCell, setSelectedRow } from '../../../redux/reducers/TableSlice';
@@ -124,6 +125,14 @@ export default function EmployeeTable(props) {
         setSelected([]);
     };
 
+    const handleActiveYnClicked = (event, userId) => {
+        event.stopPropagation()
+        employeeActiveYn(userId, () => {
+            setFlashMessage('Status aktivasi user berhasil diperbaharui.')
+            getEmployees(setEmployee)
+        })
+    }
+
     React.useEffect(() => {
         getEmployees(setEmployee)
     }, [])
@@ -133,6 +142,7 @@ export default function EmployeeTable(props) {
     }
 
   const handleClick = (event, name) => {
+      event.preventDefault()
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
 
@@ -249,11 +259,11 @@ export default function EmployeeTable(props) {
                                 <>
                                   <Button
                                     id='btn-showYn'
-                                    onClick={(event) => handleButtonShowYn(event, row)}
+                                    onClick={(event) => handleActiveYnClicked(event, row.id)}
                                   >
-                                    <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 1 ? 'green' : 'gray' }}/>
+                                    <CheckIcon fontSize='small' sx={{ color: row.aktif_yn === 'Y' ? 'green' : 'gray' }}/>
                                   </Button>
-                                  { row.aktif_yn === 1 ? 'YA' : 'TIDAK' }
+                                  { row.aktif_yn === 'Y' ? 'YA' : 'TIDAK' }
                                 </>
                           }
                       </TableCell>

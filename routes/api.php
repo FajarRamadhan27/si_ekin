@@ -29,6 +29,7 @@ Route::middleware('sanctum')->group(function () {
     Route::put('employee/{id}', [UserController::class, 'update']);
     Route::get('employee/{id}', [UserController::class, 'getDetailEmployee']);
     Route::put('employee/{id}/changePassword', [UserController::class, 'changePassword']);
+    Route::put('employee/{id}/activeYn', [UserController::class, 'changeActiveYn']);
     Route::get('assessments/{period}', [AssesmentController::class, 'index']);
     Route::put('assessments/{id}/showYn', [AssesmentController::class, 'showAssessmentYn']);
 });
