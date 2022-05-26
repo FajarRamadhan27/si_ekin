@@ -105,7 +105,7 @@ class UserService {
 
         $user = User::create(
             [
-                'id' => Carbon::now()->format('YmdHms'),
+                'id' => Carbon::now()->format('ymdu'),
                 'email' => $this->email,
                 'password' => Hash::make('12345678'),
                 'name' => $this->name,
