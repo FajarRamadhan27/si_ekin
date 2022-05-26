@@ -10,7 +10,6 @@ export const MENU_RANKING               = '/rangking'
 export const MENU_MY_SCORE              = '/nilai-saya'
 export const MENU_PROFILE               = '/profile'
 
-
 export const positions = [
     {
         id      : 'IT',
@@ -23,5 +22,20 @@ export const positions = [
     {
         id      : 'ADMIN',
         label   : 'Admin'
+    }
+]
+
+export const roles = [
+    {
+        id      : 'OWNER',
+        label   : 'Owner'
+    },
+    {
+        id      : 'LEADER',
+        label   : 'Leader'
+    },
+    {
+        id      : 'KARYAWAN',
+        label   : 'Karyawan'
     }
 ]

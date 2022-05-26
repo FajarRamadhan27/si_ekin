@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { positions } from '../../helpers/constant';
+import { positions, roles } from '../../helpers/constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedRow } from '../../redux/reducers/TableSlice';
 import { Alert, Autocomplete, Divider, Grid, TextField } from '@mui/material';
@@ -32,7 +32,6 @@ export default function InsertEmployeeModal(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
 
     if (selectedRow) {
         let identic = true;
@@ -140,11 +139,22 @@ export default function InsertEmployeeModal(props) {
             <Grid item xs={12} mt={2}>
                 <Autocomplete
                     disablePortal
+                    id="role"
+                    value={newVal?.role}
+                    onChange={(event, newValue) => { setNewVal({...newVal, role: newValue.label})}}
+                    options={roles}
+                    renderInput={(params) => <TextField {...params} label="Role" />}
+                    fullWidth
+                />
+            </Grid>
+            <Grid item xs={12} mt={2}>
+                <Autocomplete
+                    disablePortal
                     id="jabatan"
                     value={newVal?.jabatan}
                     onChange={(event, newValue) => { setNewVal({...newVal, jabatan: newValue.label})}}
                     options={positions}
-                    renderInput={(params) => <TextField {...params} label="jabatan" />}
+                    renderInput={(params) => <TextField {...params} label="Jabatan" />}
                     fullWidth
                 />
             </Grid>

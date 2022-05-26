@@ -74,6 +74,12 @@ const headCells = [
     label: 'Email',
   },
   {
+    id: 'role',
+    numeric: true,
+    disablePadding: false,
+    label: 'Role',
+  },
+  {
     id: 'jabatan',
     numeric: true,
     disablePadding: false,
@@ -252,6 +258,7 @@ export default function EmployeeTable(props) {
                       <TableCell>{row.name}</TableCell>
                       <TableCell>{row.no_telp}</TableCell>
                       <TableCell>{row.email}</TableCell>
+                      <TableCell>{row.role}</TableCell>
                       <TableCell>{row.jabatan}</TableCell>
                       <TableCell>
                           {

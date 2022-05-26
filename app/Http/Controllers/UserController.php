@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-        $response = (new UserService($request->email, $request->password, $request->name, 'N'))
+        $response = (new UserService($request->email, $request->password, $request->name, 'N', 'Karyawan'))
             ->register($request->deviceName);
 
         return response()->json($response);
@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        $response = (new UserService($request->email, $request->password))
+        $response = (new UserService($request->email, $request->password, '', ''))
             ->login($request->deviceName);
 
         return response()->json($response);
@@ -37,6 +37,7 @@ class UserController extends Controller
                 $request->password,
                 $request->name,
                 'Y',
+                $request->role,
                 $request->jabatan,
                 $request->no_telp
             )

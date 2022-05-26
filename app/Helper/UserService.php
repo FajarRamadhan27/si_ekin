@@ -13,7 +13,7 @@ class UserService {
 
     public $email, $password, $name, $jabatan, $no_telp;
 
-    public function __construct($email, $password, $name, $aktif_yn, $jabatan='', $no_telp='')
+    public function __construct($email, $password, $name, $aktif_yn, $role, $jabatan='', $no_telp='')
     {
         $this->email = $email;
         $this->password = $password;
@@ -21,6 +21,7 @@ class UserService {
         $this->jabatan = $jabatan;
         $this->no_telp = $no_telp;
         $this->aktif_yn = $aktif_yn;
+        $this->role = $role;
     }
 
     public function validateInput($email=true, $name=true)
