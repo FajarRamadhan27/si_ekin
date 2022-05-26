@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        $response = (new UserService($request->email, $request->password, '', ''))
+        $response = (new UserService($request->email, $request->password, '', '', ''))
             ->login($request->deviceName);
 
         return response()->json($response);
@@ -59,7 +59,8 @@ class UserController extends Controller
                 'name' => $request->name,
                 'jabatan' => $request->jabatan,
                 'no_telp' => $request->no_telp,
-                'email' => $request->email
+                'email' => $request->email,
+                'role' => $request->role,
             ]);
 
         return response()->json(['status' => true, 'user' => $user]);
