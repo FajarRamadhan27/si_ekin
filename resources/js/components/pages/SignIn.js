@@ -17,6 +17,8 @@ import { Alert } from '@mui/material';
 import Axios from 'axios';
 import SetAuthorizationToken from '../../utils/SetAuthorizationToken';
 import { SET_CURRENT_USER } from '../../helpers/constant';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/reducers/userSlice';
 
 const theme = createTheme();
 
@@ -29,10 +31,10 @@ export function setCurrentUser(user) {
 
 function SignIn(props) {
 
+  const dispatch = useDispatch()
   const [errorMessage, setError] = React.useState(null)
 
-  const { setInitialMenu } = props.uiAttr,
-    { setUser } = props.data
+  const { setInitialMenu } = props.uiAttr
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -49,7 +51,7 @@ function SignIn(props) {
             localStorage.setItem('jwtToken', token)
             localStorage.setItem('user', JSON.stringify(user))
             SetAuthorizationToken(token)
-            setUser(user)
+            dispatch(setUser(user))
         } else {
             setError(messages);
         }

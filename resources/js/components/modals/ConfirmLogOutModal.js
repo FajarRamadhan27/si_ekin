@@ -2,7 +2,9 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
+import { useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
+import { setUser } from '../../redux/reducers/userSlice'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const style = {
@@ -19,10 +21,11 @@ const style = {
 
 export default function ConfirmLogOutModal(props) {
 
-  const { logOutModal, setModalLogOut, setUser, setToken} = props.uiAttr
+  const dispatch = useDispatch()
+  const { logOutModal, setModalLogOut, setToken} = props.uiAttr
 
   const handleLogout = () => {
-    setUser(null)
+    dispatch(setUser(null))
     setToken(null)
     localStorage.clear('jwtToken')
     localStorage.clear('user')

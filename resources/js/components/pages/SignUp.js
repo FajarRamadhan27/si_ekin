@@ -14,15 +14,17 @@ import Copyright from '../containers/copyright';
 import Axios from 'axios';
 import { Alert } from '@mui/material';
 import SetAuthorizationToken from '../../utils/SetAuthorizationToken';
+import { useDispatch } from 'react-redux'
+import { setUser } from '../../redux/reducers/userSlice'
 
 const theme = createTheme();
 
 function SignUp(props) {
 
+  const dispatch = useDispatch()
   const [errorMessage, setError] = React.useState({email: '', password:'', name:''})
 
-  const { setInitialMenu } = props.uiAttr,
-    { setUser } = props.data
+  const { setInitialMenu } = props.uiAttr
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -40,7 +42,7 @@ function SignUp(props) {
             localStorage.setItem('jwtToken', token)
             localStorage.setItem('user', JSON.stringify(user))
             SetAuthorizationToken(token)
-            setUser(user)
+            dispatch(setUser(user))
         } else {
             setError(messages);
         }

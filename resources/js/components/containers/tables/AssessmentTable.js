@@ -260,7 +260,7 @@ EnhancedTableToolbar.propTypes = {
 
 export default function AssessmentTable(props) {
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('id');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -434,7 +434,7 @@ export default function AssessmentTable(props) {
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
                       <TableCell>
                           {
-                              row.tampilkan_hasil != null ?
+                              row.tampilkan_hasil &&
                                 <>
                                   <Button
                                     id='btn-showYn'
@@ -444,7 +444,6 @@ export default function AssessmentTable(props) {
                                   </Button>
                                   { row.tampilkan_hasil === 1 ? 'YA' : 'TIDAK' }
                                 </>
-                              : null
                           }
                       </TableCell>
                     </TableRow>

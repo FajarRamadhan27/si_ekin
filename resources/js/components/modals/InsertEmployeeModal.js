@@ -3,7 +3,10 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Alert, Divider, Grid, TextField } from '@mui/material';
+import { positions, roles } from '../../helpers/constant';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedRow } from '../../redux/reducers/TableSlice';
+import { Alert, Autocomplete, Divider, Grid, TextField } from '@mui/material';
 import { createEmployee, getEmployees, updateEmployee } from '../../utils/Axios';
 
 const style = {
@@ -20,26 +23,32 @@ const style = {
 
 export default function InsertEmployeeModal(props) {
 
+  const dispatch = useDispatch()
+  const { selectedRow } = useSelector(state => state.table)
   const [errorMessage, setError] = React.useState();
+  const [newVal, setNewVal] = React.useState(selectedRow)
 
-  const { inputModal, setInputModal, setEmployee, setFlashMessage, editedRow, setSelected, setEditedRow } = props.uiAttr
+  const { inputModal, setInputModal, setEmployee, setFlashMessage, setSelected } = props.uiAttr
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
+    if (selectedRow) {
+        let identic = true;
 
-    let email = data.get('email')
-    let name = data.get('name')
-    let jabatan = data.get('jabatan')
-    let no_telp = data.get('no_telp')
+        for (const key in selectedRow) {
+            if(selectedRow[key] !== newVal[key]) {
+                identic = false
+                break;
+            }
+        }
 
-    if (editedRow) {
-        if (email === editedRow.email && name === editedRow.name && editedRow.jabatan === jabatan && no_telp === editedRow.no_telp) {
+        if (identic) {
             setError({ status: false, messages: {email : ['Tidak ada data yang dirubah'] }})
             return
         }
-        updateEmployee({email, name, jabatan, no_telp}, editedRow.id, (response) => {
+
+        updateEmployee(newVal, selectedRow.id, (response) => {
             const { status } = response.data
 
             if (status === true) {
@@ -48,7 +57,7 @@ export default function InsertEmployeeModal(props) {
                 getEmployees(setEmployee)
                 setSelected([])
                 setFlashMessage('Data Berhasil diperbarui...')
-                setEditedRow(null)
+                dispatch(setSelectedRow(null))
             } else {
                 setError(response.data)
             }
@@ -56,6 +65,11 @@ export default function InsertEmployeeModal(props) {
     } else {
         createEmployee({email, name, jabatan, no_telp}, setInputModal, setEmployee, setError, setFlashMessage)
     }
+  }
+
+  const handleTextChange = (event, key) => {
+    const { [key]:changedVal, ...rest} = newVal
+    setNewVal({ [key]:event.target.value, ...rest})
   }
 
   return (
@@ -96,7 +110,8 @@ export default function InsertEmployeeModal(props) {
                     name="name"
                     label="Nama"
                     fullWidth
-                    value={ editedRow?.name }
+                    value={ newVal?.name }
+                    onChange={(event) => {handleTextChange(event, 'name')}}
                 />
             </Grid>
             <Grid item xs={12} mt={2}>
@@ -106,7 +121,8 @@ export default function InsertEmployeeModal(props) {
                     name="no_telp"
                     label="Nomor Telepon"
                     fullWidth
-                    value={ editedRow?.no_telp }
+                    value={ newVal?.no_telp }
+                    onChange={(event) => {handleTextChange(event, 'no_telp')}}
                 />
             </Grid>
             <Grid item xs={12} mt={2}>
@@ -116,17 +132,30 @@ export default function InsertEmployeeModal(props) {
                     name="email"
                     label="Email"
                     fullWidth
-                    value={ editedRow?.email }
+                    value={ newVal?.email }
+                    onChange={(event) => {handleTextChange(event, 'email')}}
                 />
             </Grid>
             <Grid item xs={12} mt={2}>
-                <TextField
-                    required
-                    id="jabatan"
-                    name="jabatan"
-                    label="Jabatan"
+                <Autocomplete
+                    disablePortal
+                    id="role"
+                    value={newVal?.role}
+                    onChange={(event, newValue) => { setNewVal({...newVal, role: newValue.label})}}
+                    options={roles}
+                    renderInput={(params) => <TextField {...params} label="Role" />}
                     fullWidth
-                    value={ editedRow?.jabatan }
+                />
+            </Grid>
+            <Grid item xs={12} mt={2}>
+                <Autocomplete
+                    disablePortal
+                    id="jabatan"
+                    value={newVal?.jabatan}
+                    onChange={(event, newValue) => { setNewVal({...newVal, jabatan: newValue.label})}}
+                    options={positions}
+                    renderInput={(params) => <TextField {...params} label="Jabatan" />}
+                    fullWidth
                 />
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>

@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField'
 import ResetPasswordModal from "../../modals/ResetPasswordModal"
 import { getEmployeeAva, getEmployeeDetail } from "../../../utils/Axios"
 import { Typography, Grid, Paper, Card, CardMedia, CardContent, CardActions, Button, Alert } from "@mui/material"
+import { useSelector } from "react-redux"
 
 function Profile(props) {
 
@@ -12,11 +13,11 @@ function Profile(props) {
     const [modalResetPassword, setModal] = useState(false)
     const [flashMessage, setFlashMessage] = useState(null)
 
-    const { user } = props.data
+    const { user } = useSelector(state => state )
 
     useEffect(() => {
         getEmployeeAva(setAva)
-        getEmployeeDetail(setDetail, user.id)
+        getEmployeeDetail(setDetail, user.value.id)
 
         if (flashMessage) {
             const timeout = setTimeout(() => {
@@ -64,10 +65,10 @@ function Profile(props) {
                             </Grid>
                             <Grid item lg={10} md={6} sm={6} xs={12}>
                                 <div className="flex flex-col mr-4">
-                                    <TextField id="outlined-basic" label="Nama" variant="outlined" value={user.name}/>
-                                    <TextField id="outlined-basic" label="No Telpon" variant="outlined" value={user.no_telp} sx={{ mt:2}} />
-                                    <TextField id="outlined-basic" label="Email" variant="outlined" value={user.email} sx={{ mt:2}} />
-                                    <TextField id="outlined-basic" label="Jabatan" variant="outlined" value={user.jabatan} sx={{ mt:2}} />
+                                    <TextField id="outlined-basic" label="Nama" variant="outlined" value={detailEmployee.name}/>
+                                    <TextField id="outlined-basic" label="No Telpon" variant="outlined" value={detailEmployee.no_telp} sx={{ mt:2}} />
+                                    <TextField id="outlined-basic" label="Email" variant="outlined" value={detailEmployee.email} sx={{ mt:2}} />
+                                    <TextField id="outlined-basic" label="Jabatan" variant="outlined" value={detailEmployee.jabatan} sx={{ mt:2}} />
                                     <Button
                                         size="medium"
                                         onClick={() => setModal(true)}

@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-        $response = (new UserService($request->email, $request->password, $request->name))
+        $response = (new UserService($request->email, $request->password, $request->name, 'N', 'Karyawan'))
             ->register($request->deviceName);
 
         return response()->json($response);
@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        $response = (new UserService($request->email, $request->password))
+        $response = (new UserService($request->email, $request->password, '', '', ''))
             ->login($request->deviceName);
 
         return response()->json($response);
@@ -36,6 +36,8 @@ class UserController extends Controller
                 $request->email,
                 $request->password,
                 $request->name,
+                'Y',
+                $request->role,
                 $request->jabatan,
                 $request->no_telp
             )
@@ -57,7 +59,8 @@ class UserController extends Controller
                 'name' => $request->name,
                 'jabatan' => $request->jabatan,
                 'no_telp' => $request->no_telp,
-                'email' => $request->email
+                'email' => $request->email,
+                'role' => $request->role,
             ]);
 
         return response()->json(['status' => true, 'user' => $user]);
@@ -109,6 +112,26 @@ class UserController extends Controller
         return [
             'status' => true,
             'messages' => 'Password berhasil di Perbarui.'
+        ];
+    }
+
+    /**
+     * Change user status
+     *
+     * @param  Request $request
+     * @param  string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function changeActiveYn($id)
+    {
+        $user = User::where('id', $id)->firstOrFail();
+
+        $user->aktif_yn = $user->aktif_yn === 'Y' ? 'N' : 'Y';
+        $user->save();
+
+        return [
+            'status' => true,
+            'messages' => 'Status user berhasil diperbaharui.'
         ];
     }
 }
