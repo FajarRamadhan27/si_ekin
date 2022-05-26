@@ -3,10 +3,11 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Alert, Divider, Grid, TextField } from '@mui/material';
-import { createEmployee, getEmployees, updateEmployee } from '../../utils/Axios';
+import { positions } from '../../helpers/constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedRow } from '../../redux/reducers/TableSlice';
+import { Alert, Autocomplete, Divider, Grid, TextField } from '@mui/material';
+import { createEmployee, getEmployees, updateEmployee } from '../../utils/Axios';
 
 const style = {
   position: 'absolute',
@@ -32,19 +33,23 @@ export default function InsertEmployeeModal(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-
-    let email = data.get('email')
-    let name = data.get('name')
-    let jabatan = data.get('jabatan')
-    let no_telp = data.get('no_telp')
 
     if (selectedRow) {
-        if (email === selectedRow.email && name === selectedRow.name && selectedRow.jabatan === jabatan && no_telp === selectedRow.no_telp) {
+        let identic = true;
+
+        for (const key in selectedRow) {
+            if(selectedRow[key] !== newVal[key]) {
+                identic = false
+                break;
+            }
+        }
+
+        if (identic) {
             setError({ status: false, messages: {email : ['Tidak ada data yang dirubah'] }})
             return
         }
-        updateEmployee({email, name, jabatan, no_telp}, selectedRow.id, (response) => {
+
+        updateEmployee(newVal, selectedRow.id, (response) => {
             const { status } = response.data
 
             if (status === true) {
@@ -133,14 +138,14 @@ export default function InsertEmployeeModal(props) {
                 />
             </Grid>
             <Grid item xs={12} mt={2}>
-                <TextField
-                    required
+                <Autocomplete
+                    disablePortal
                     id="jabatan"
-                    name="jabatan"
-                    label="Jabatan"
+                    value={newVal?.jabatan}
+                    onChange={(event, newValue) => { setNewVal({...newVal, jabatan: newValue.label})}}
+                    options={positions}
+                    renderInput={(params) => <TextField {...params} label="jabatan" />}
                     fullWidth
-                    value={ newVal?.jabatan }
-                    onChange={(event) => {handleTextChange(event, 'jabatan')}}
                 />
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>

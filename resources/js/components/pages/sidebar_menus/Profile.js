@@ -65,10 +65,10 @@ function Profile(props) {
                             </Grid>
                             <Grid item lg={10} md={6} sm={6} xs={12}>
                                 <div className="flex flex-col mr-4">
-                                    <TextField id="outlined-basic" label="Nama" variant="outlined" value={user.value.name}/>
-                                    <TextField id="outlined-basic" label="No Telpon" variant="outlined" value={user.value.no_telp} sx={{ mt:2}} />
-                                    <TextField id="outlined-basic" label="Email" variant="outlined" value={user.value.email} sx={{ mt:2}} />
-                                    <TextField id="outlined-basic" label="Jabatan" variant="outlined" value={user.value.jabatan} sx={{ mt:2}} />
+                                    <TextField id="outlined-basic" label="Nama" variant="outlined" value={detailEmployee.name}/>
+                                    <TextField id="outlined-basic" label="No Telpon" variant="outlined" value={detailEmployee.no_telp} sx={{ mt:2}} />
+                                    <TextField id="outlined-basic" label="Email" variant="outlined" value={detailEmployee.email} sx={{ mt:2}} />
+                                    <TextField id="outlined-basic" label="Jabatan" variant="outlined" value={detailEmployee.jabatan} sx={{ mt:2}} />
                                     <Button
                                         size="medium"
                                         onClick={() => setModal(true)}

@@ -9,3 +9,19 @@ export const MENU_APPROVAL              = '/approval'
 export const MENU_RANKING               = '/rangking'
 export const MENU_MY_SCORE              = '/nilai-saya'
 export const MENU_PROFILE               = '/profile'
+
+
+export const positions = [
+    {
+        id      : 'IT',
+        label   : 'IT'
+    },
+    {
+        id      : 'MARKETING',
+        label   : 'Marketing'
+    },
+    {
+        id      : 'ADMIN',
+        label   : 'Admin'
+    }
+]
