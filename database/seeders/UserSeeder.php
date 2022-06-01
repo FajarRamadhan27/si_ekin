@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'id' => Carbon::now()->format('ymdu'),
+                'id' => 1,
                 'name' => 'Default Owner',
                 'email' => 'owner@email.com',
                 'password' => Hash::make('owner'),
