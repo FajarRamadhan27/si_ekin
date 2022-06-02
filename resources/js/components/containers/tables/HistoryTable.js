@@ -9,7 +9,6 @@ import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
-import CheckIcon from '@mui/icons-material/Check';
 import TableContainer from '@mui/material/TableContainer';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TablePagination from '@mui/material/TablePagination';
@@ -21,15 +20,16 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
-import { Alert, Button, TextField } from '@mui/material';
+import { Alert, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { assessmentShowYn, deleteEmployee, getAssessments } from '../../../utils/Axios';
+import { assessmentShowYn, deleteEmployee, getAssessments, getAssessmentsHistory } from '../../../utils/Axios';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import { DatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import styled from '@emotion/styled';
+import { useSelector } from 'react-redux';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
@@ -121,16 +121,16 @@ const headCells = [
     label: 'Nilai Akhir',
   },
   {
+    id: 'ranking',
+    numeric: false,
+    disablePadding: false,
+    label: 'Ranking',
+  },
+  {
     id: 'catatan',
     numeric: false,
     disablePadding: false,
     label: 'Catatan',
-  },
-  {
-    id: 'tampilkan_hasil',
-    numeric: false,
-    disablePadding: false,
-    label: 'Tampilkan Hasil',
   },
 ];
 
@@ -258,7 +258,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function AssessmentTable(props) {
+export default function HistoryTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('id');
   const [selected, setSelected] = React.useState([]);
@@ -271,6 +271,8 @@ export default function AssessmentTable(props) {
   const [editedRow, setEditedRow] = React.useState(null)
   const [isFiltered, setFilter] = React.useState(false)
   const [value, setValue] = React.useState(moment(new Date()))
+
+  const { user } = useSelector(state => state)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -288,7 +290,7 @@ export default function AssessmentTable(props) {
     };
 
     React.useEffect(() => {
-        getAssessments(setAssessment,value.format('YYYYMM'))
+        getAssessmentsHistory(setAssessment, user.value.id, '2022')
     }, [])
 
     if (!assessments) {
@@ -432,20 +434,7 @@ export default function AssessmentTable(props) {
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.efisiensi}</TableCell>
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
-                      <TableCell>
-                          {
-                              row.tampilkan_hasil &&
-                                <>
-                                  <Button
-                                    id='btn-showYn'
-                                    onClick={(event) => handleButtonShowYn(event, row)}
-                                  >
-                                    <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 1 ? 'green' : 'gray' }}/>
-                                  </Button>
-                                  { row.tampilkan_hasil === 1 ? 'YA' : 'TIDAK' }
-                                </>
-                          }
-                      </TableCell>
+                      <TableCell>1</TableCell>
                     </TableRow>
                   );
                 })}

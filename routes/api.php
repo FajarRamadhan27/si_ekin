@@ -32,4 +32,5 @@ Route::middleware('sanctum')->group(function () {
     Route::put('employee/{id}/activeYn', [UserController::class, 'changeActiveYn']);
     Route::get('assessments/{period}', [AssesmentController::class, 'index']);
     Route::put('assessments/{id}/showYn', [AssesmentController::class, 'showAssessmentYn']);
+    Route::get('assessments/history/{id_user}/{period}', [AssesmentController::class, 'assessmentHistory']);
 });

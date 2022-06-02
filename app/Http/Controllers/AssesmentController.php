@@ -40,6 +40,37 @@ class AssesmentController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function assessmentHistory($id_user, $period)
+    {
+        $user = DB::table('users')
+            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
+            ->select(
+                'penilaian.id',
+                'users.name',
+                'penilaian.id as penilaian_id',
+                'penilaian.karakter',
+                'penilaian.absensi',
+                'penilaian.teamwork',
+                'penilaian.pencapaian',
+                'penilaian.loyalitas',
+                'penilaian.efisiensi',
+                'penilaian.nilai_akhir',
+                'penilaian.catatan',
+                'penilaian.tampilkan_hasil',
+                'penilaian.tanggal'
+            )
+            ->where('penilaian.id_user', '=', $id_user)
+            ->orderBy('penilaian.tanggal')
+            ->get();
+
+        return response()->json($user);
+    }
+
+    /**
      * Show assessment to user Y/N
      *
      * @param  \Illuminate\Http\Request  $request

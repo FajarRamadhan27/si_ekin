@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material"
+import HistoryTable from "../../containers/tables/HistoryTable"
 
 function History() {
     return (
@@ -11,6 +12,7 @@ function History() {
             >
                History
             </Typography>
+            <HistoryTable/>
         </>
     )
 }

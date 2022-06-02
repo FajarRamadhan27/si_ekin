@@ -9,6 +9,7 @@ export const MENU_APPROVAL              = '/approval'
 export const MENU_RANKING               = '/rangking'
 export const MENU_MY_SCORE              = '/nilai-saya'
 export const MENU_PROFILE               = '/profile'
+export const MENU_HISTORY               = '/history'
 
 export const positions = [
     {

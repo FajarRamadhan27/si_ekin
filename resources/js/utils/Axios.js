@@ -24,6 +24,17 @@ export function getAssessments(callback, period) {
         }).catch(e => console.log(e))
 }
 
+export function getAssessmentsHistory(callback,id,period) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/assessments/history/${id}/${period}`)
+        .then( response => {
+            console.log(response);
+            if (response.status === 200) {
+                callback({ original: response.data, forFilter: response.data})
+            }
+        }).catch(e => console.log(e))
+}
+
 export function createEmployee(data, callback, callback2, callback3,callback4) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.post(`${BASE_URL}api/employee`, { ...data })
