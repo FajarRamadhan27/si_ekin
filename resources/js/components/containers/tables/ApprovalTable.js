@@ -1,35 +1,35 @@
+import moment from 'moment';
 import Search from '../Search';
 import * as React from 'react';
 import Loading from '../Loading';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import styled from '@emotion/styled';
 import Table from '@mui/material/Table';
+import Paper from '@mui/material/Paper';
+import Switch from '@mui/material/Switch';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import { alpha } from '@mui/material/styles';
 import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import CheckIcon from '@mui/icons-material/Check';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TablePagination from '@mui/material/TablePagination';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
-import { Alert, Button, TextField } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Alert, Button, TextField } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { assessmentShowYn, deleteEmployee, getAssessments } from '../../../utils/Axios';
+import { approveYn, deleteEmployee, getApproval} from '../../../utils/Axios';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import { DatePicker } from '@mui/x-date-pickers';
-import moment from 'moment';
-import styled from '@emotion/styled';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
@@ -127,10 +127,10 @@ const headCells = [
     label: 'Catatan',
   },
   {
-    id: 'tampilkan_hasil',
+    id: 'approve_yn',
     numeric: false,
     disablePadding: false,
-    label: 'Tampilkan Hasil',
+    label: 'Approve Y/N',
   },
 ];
 
@@ -258,7 +258,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function AssessmentTable(props) {
+export default function ApprovalTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('id');
   const [selected, setSelected] = React.useState([]);
@@ -288,7 +288,7 @@ export default function AssessmentTable(props) {
     };
 
     React.useEffect(() => {
-        getAssessments(setAssessment,value.format('YYYYMM'))
+        getApproval(setAssessment,value.format('YYYYMM'))
     }, [])
 
     if (!assessments) {
@@ -315,14 +315,14 @@ export default function AssessmentTable(props) {
     setSelected(newSelected);
   };
 
-  const handleButtonShowYn = (event, assessment) => {
-    event.preventDefault()
+  const handleButtonApproveYn = (event, assessment) => {
+    event.stopPropagation()
 
-    const { tampilkan_hasil, id } = assessment
+    const { approve_yn, id } = assessment
 
-    assessmentShowYn(
+    approveYn(
         setFlashMessage,
-        { id, showYn : tampilkan_hasil === 'Y' ? 'N' : 'Y' },
+        { id, approveYn : approve_yn === 'Y' ? 'N' : 'Y' },
         setAssessment,
         value.format('YYYYMM')
     )
@@ -371,7 +371,7 @@ export default function AssessmentTable(props) {
                 value={value}
                 onChange={(newValue) => {
                     setValue(newValue)
-                    getAssessments(setAssessment, newValue.format('YYYYMM'))
+                    getApproval(setAssessment, newValue.format('YYYYMM'))
                 }}
                 renderInput={(params) => <TextField {...params} helperText={null} />}
             />
@@ -405,8 +405,9 @@ export default function AssessmentTable(props) {
                       tabIndex={-1}
                       key={row.id}
                       selected={isItemSelected}
+                      onClick={(event) => handleClick(event, row.id)}
                     >
-                      <TableCell onClick={(event) => handleClick(event, row.id)} padding="checkbox">
+                      <TableCell padding="checkbox">
                         <Checkbox
                           color="primary"
                           checked={isItemSelected}
@@ -423,24 +424,24 @@ export default function AssessmentTable(props) {
                       >
                         {row.tanggal}
                       </TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.name}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.karakter}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.absensi}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.teamwork}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.pencapaian}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.loyalitas}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.efisiensi}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
+                      <TableCell >{row.name}</TableCell>
+                      <TableCell >{row.karakter}</TableCell>
+                      <TableCell >{row.absensi}</TableCell>
+                      <TableCell >{row.teamwork}</TableCell>
+                      <TableCell >{row.pencapaian}</TableCell>
+                      <TableCell >{row.loyalitas}</TableCell>
+                      <TableCell >{row.efisiensi}</TableCell>
+                      <TableCell >{row.nilai_akhir}</TableCell>
+                      <TableCell >{row.catatan}</TableCell>
                       <TableCell>
                         <>
                             <Button
                             id='btn-showYn'
-                            onClick={(event) => handleButtonShowYn(event, row)}
+                            onClick={(event) => handleButtonApproveYn(event, row)}
                             >
-                            <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 'Y' ? 'green' : 'gray' }}/>
+                            <CheckIcon fontSize='small' sx={{ color: row.approve_yn === 'Y' ? 'green' : 'gray' }}/>
                             </Button>
-                            { row.tampilkan_hasil === 'Y' ? 'YA' : 'TIDAK' }
+                            { row.approve_yn === 'Y' ? 'YA' : 'TIDAK' }
                         </>
                       </TableCell>
                     </TableRow>

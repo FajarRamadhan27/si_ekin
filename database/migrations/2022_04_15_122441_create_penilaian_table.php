@@ -25,7 +25,8 @@ class CreatePenilaianTable extends Migration
             $table->integer('efisiensi')->nullable();
             $table->integer('nilai_akhir')->nullable();
             $table->string('catatan')->nullable();
-            $table->boolean('tampilkan_hasil')->default(false);
+            $table->string('tampilkan_hasil')->default('N');
+            $table->string('approve_yn')->default('N');
             $table->timestamps();
         });
     }

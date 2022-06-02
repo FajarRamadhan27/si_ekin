@@ -24,6 +24,17 @@ export function getAssessments(callback, period) {
         }).catch(e => console.log(e))
 }
 
+export function getApproval(callback, period) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/assessments/approval/${period}`)
+        .then( response => {
+            console.log(response);
+            if (response.status === 200) {
+                callback({ original: response.data, forFilter: response.data})
+            }
+        }).catch(e => console.log(e))
+}
+
 export function getAssessmentsHistory(callback,id,period) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.get(`${BASE_URL}api/assessments/history/${id}/${period}`)
@@ -124,6 +135,26 @@ export function assessmentShowYn(setFlashMessage,data,setAssessments, period) {
             switch (status) {
                 case true:
                     getAssessments(setAssessments,period)
+                    setFlashMessage({ type: 'success', message: response.data.message})
+                break;
+                case false:
+                    console.log(response.data)
+                break;
+            }
+        }).catch(e => console.log(e))
+}
+
+export function approveYn(setFlashMessage,data,setAssessments, period) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+
+    const { id, ...rest } = data
+
+    Axios.put(`${BASE_URL}api/assessments/${id}/approveYn`, { ...rest })
+        .then( response => {
+            const { status } = response.data
+            switch (status) {
+                case true:
+                    getApproval(setAssessments,period)
                     setFlashMessage({ type: 'success', message: response.data.message})
                 break;
                 case false:

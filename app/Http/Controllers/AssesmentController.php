@@ -64,7 +64,40 @@ class AssesmentController extends Controller
                 'penilaian.tanggal'
             )
             ->where('penilaian.id_user', '=', $id_user)
+            ->where('penilaian.approve_yn', '=', 'Y')
             ->orderBy('penilaian.tanggal')
+            ->get();
+
+        return response()->json($user);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function assessmentsApproval($period)
+    {
+        $user = DB::table('users')
+            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
+            ->select(
+                'penilaian.id',
+                'users.name',
+                'penilaian.id as penilaian_id',
+                'penilaian.karakter',
+                'penilaian.absensi',
+                'penilaian.teamwork',
+                'penilaian.pencapaian',
+                'penilaian.loyalitas',
+                'penilaian.efisiensi',
+                'penilaian.nilai_akhir',
+                'penilaian.catatan',
+                'penilaian.approve_yn',
+                'penilaian.tanggal'
+            )
+            ->where('penilaian.tanggal', '=', $period)
+            ->where('penilaian.tampilkan_hasil', '=', 'Y')
+            ->orderBy('users.name')
             ->get();
 
         return response()->json($user);
@@ -85,7 +118,27 @@ class AssesmentController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => $request->showYn === 1 ? 'Penilaian berhasil ditampilkan.' : 'Penilaian berhasil disembunyikan.',
+            'message' => $request->showYn === 'Y' ? 'Penilaian berhasil ditampilkan.' : 'Penilaian berhasil disembunyikan.',
+            'data' => $assessment
+        ]);
+    }
+
+    /**
+     * Approve assessment to user Y/N
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function approveAssessmentsYn($id, Request $request)
+    {
+        $assessment = Assesment::where('id', $id)->firstOrFail();
+
+        $assessment->approve_yn = $request->approveYn;
+        $assessment->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => $request->approveYn === 'Y' ? 'Penilaian berhasil disetujui.' : 'Penilaian berhasil ditolak.',
             'data' => $assessment
         ]);
     }

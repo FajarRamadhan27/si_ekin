@@ -40,8 +40,7 @@ class AssessmentSeeder extends Seeder
                     'pencapaian' => $pencapaian,
                     'loyalitas' => $loyalitas,
                     'efisiensi' => $efisiensi,
-                    'nilai_akhir' => $nilaiAkhir,
-                    'tampilkan_hasil' => 1
+                    'nilai_akhir' => $nilaiAkhir
                 ];
 
                 array_push($assessments, $assessment);
