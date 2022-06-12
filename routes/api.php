@@ -31,6 +31,9 @@ Route::middleware('sanctum')->group(function () {
     Route::put('employee/{id}/changePassword', [UserController::class, 'changePassword']);
     Route::put('employee/{id}/activeYn', [UserController::class, 'changeActiveYn']);
     Route::get('assessments/{period}', [AssesmentController::class, 'index']);
+    Route::get('assessments/rank/{period}', [AssesmentController::class, 'getRank']);
+    Route::get('assessments/approval/{period}', [AssesmentController::class, 'assessmentsApproval']);
     Route::put('assessments/{id}/showYn', [AssesmentController::class, 'showAssessmentYn']);
+    Route::put('assessments/{id}/approveYn', [AssesmentController::class, 'approveAssessmentsYn']);
     Route::get('assessments/history/{id_user}/{period}', [AssesmentController::class, 'assessmentHistory']);
 });

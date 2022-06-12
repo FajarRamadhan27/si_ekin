@@ -76,6 +76,30 @@ class AssesmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function getRank($period)
+    {
+        $user = DB::table('users')
+            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
+            ->select(
+                'penilaian.id',
+                'users.name',
+                'users.jabatan',
+                'penilaian.tanggal',
+                'penilaian.nilai_akhir'
+            )
+            ->where('penilaian.approve_yn', '=', 'Y')
+            ->where('penilaian.tanggal', '=', $period)
+            ->orderByDesc('penilaian.nilai_akhir')
+            ->get();
+
+        return response()->json($user);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function assessmentsApproval($period)
     {
         $user = DB::table('users')
