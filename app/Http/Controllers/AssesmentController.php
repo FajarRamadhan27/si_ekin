@@ -64,6 +64,7 @@ class AssesmentController extends Controller
                 'penilaian.tanggal'
             )
             ->where('penilaian.id_user', '=', $id_user)
+            ->where(DB::raw('substr(penilaian.tanggal, 1,4)'), '=', $period)
             ->where('penilaian.approve_yn', '=', 'Y')
             ->orderBy('penilaian.tanggal')
             ->get();
@@ -89,7 +90,7 @@ class AssesmentController extends Controller
             )
             ->where('penilaian.approve_yn', '=', 'Y')
             ->where('penilaian.tanggal', '=', $period)
-            ->orderByDesc('penilaian.nilai_akhir')
+            ->orderBy('penilaian.nilai_akhir', 'desc')
             ->get();
 
         return response()->json($user);

@@ -259,8 +259,8 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function HistoryTable(props) {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('id');
+  const [order, setOrder] = React.useState('desc');
+  const [orderBy, setOrderBy] = React.useState('tanggal');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -290,7 +290,7 @@ export default function HistoryTable(props) {
     };
 
     React.useEffect(() => {
-        getAssessmentsHistory(setAssessment, user.value.id, '2022')
+        getAssessmentsHistory(setAssessment, user.value.id, value.format('YYYY'))
     }, [])
 
     if (!assessments) {
@@ -366,14 +366,14 @@ export default function HistoryTable(props) {
         <div className='flex mx-4 my-6 items-center justify-end text-sm '>
             <DatePickerCustom
                 wrapperClassName="date-picker"
-                views={['year', 'month']}
+                views={['year']}
                 label="Pilih Periode"
                 minDate={moment(new Date('2022-01-01'))}
                 maxDate={moment(new Date('2025-12-31'))}
                 value={value}
                 onChange={(newValue) => {
                     setValue(newValue)
-                    getAssessments(setAssessment, newValue.format('YYYYMM'))
+                    getAssessmentsHistory(setAssessment, user.value.id, newValue.format('YYYY'))
                 }}
                 renderInput={(params) => <TextField {...params} helperText={null} />}
             />
