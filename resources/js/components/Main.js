@@ -19,9 +19,7 @@ function Main() {
     if (user) {
         return (
             <LocalizationProvider dateAdapter={AdapterMoment}>
-                <BrowserRouter>
-                    <Dashboard uiAttr={{token, setToken}}/>
-                </BrowserRouter>
+                <Dashboard uiAttr={{token, setToken}}/>
             </LocalizationProvider>
         )
     } else {
@@ -37,8 +35,10 @@ export default Main;
 
 if (document.getElementById('app')) {
     ReactDOM.render(
-    <Provider store={store}>
-        <Main />
-    </Provider>
+        <Provider store={store}>
+            <BrowserRouter>
+                <Main />
+            </BrowserRouter>
+        </Provider>
     , document.getElementById('app'));
 }

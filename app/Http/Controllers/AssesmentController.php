@@ -46,28 +46,44 @@ class AssesmentController extends Controller
      */
     public function assessmentHistory($id_user, $period)
     {
-        $user = DB::table('users')
-            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
-            ->select(
-                'penilaian.id',
-                'users.name',
-                'penilaian.id as penilaian_id',
-                'penilaian.karakter',
-                'penilaian.absensi',
-                'penilaian.teamwork',
-                'penilaian.pencapaian',
-                'penilaian.loyalitas',
-                'penilaian.efisiensi',
-                'penilaian.nilai_akhir',
-                'penilaian.catatan',
-                'penilaian.tampilkan_hasil',
-                'penilaian.tanggal'
-            )
-            ->where('penilaian.id_user', '=', $id_user)
-            ->where(DB::raw('substr(penilaian.tanggal, 1,4)'), '=', $period)
-            ->where('penilaian.approve_yn', '=', 'Y')
-            ->orderBy('penilaian.tanggal')
-            ->get();
+        $sql = "
+            SELECT u.name
+                , p.id
+                , p.tanggal
+                , p.karakter
+                , p.absensi
+                , p.teamwork
+                , p.pencapaian
+                , p.loyalitas
+                , p.efisiensi
+                , p.nilai_akhir
+                , p.catatan
+                , c.num AS rank
+            FROM users u
+                , penilaian p
+                , (
+                    SELECT
+                        @row_number:=CASE
+                            WHEN @tanggal = A.tanggal
+                                THEN @row_number + 1
+                            ELSE 1
+                        END AS num,
+                        @tanggal:=tanggal tanggal,
+                    A. id,
+                        A.nilai_akhir
+                    FROM penilaian A
+                    ORDER BY tanggal, NILAI_AKHIR DESC
+                ) c
+            WHERE u.id = p.id_user
+                AND p.approve_yn = 'Y'
+                AND p.id = c.id
+                AND u.id = ?
+                AND SUBSTR(p.tanggal, 1, 4) = ?
+            ORDER BY P.tanggal";
+
+            DB::statement(DB::raw('set @ROW_NUM := 0'));
+
+        $user = DB::select(str_replace("\n", "", $sql), [$id_user, $period]);
 
         return response()->json($user);
     }

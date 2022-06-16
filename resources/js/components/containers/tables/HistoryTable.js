@@ -317,19 +317,6 @@ export default function HistoryTable(props) {
     setSelected(newSelected);
   };
 
-  const handleButtonShowYn = (event, assessment) => {
-    event.preventDefault()
-
-    const { tampilkan_hasil, id } = assessment
-
-    assessmentShowYn(
-        setFlashMessage,
-        { id, showYn : tampilkan_hasil === 1 ? 2 : 1 },
-        setAssessment,
-        value.format('YYYYMM')
-    )
-  }
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -433,8 +420,8 @@ export default function HistoryTable(props) {
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.loyalitas}</TableCell>
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.efisiensi}</TableCell>
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
+                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.rank}</TableCell>
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
-                      <TableCell>1</TableCell>
                     </TableRow>
                   );
                 })}
