@@ -21,15 +21,19 @@ Route::post('login',    [UserController::class, 'login']);
 
 Route::middleware('sanctum')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'dashboard']);
-    Route::get('employee', [UserController::class, 'getEmployee']);
 
+    // Employee
+    Route::get('employee', [UserController::class, 'getEmployee']);
     Route::post('employee', [UserController::class, 'create']);
     Route::delete('employee', [UserController::class, 'delete']);
     Route::get('employee/ava', [UserController::class, 'getAva']);
+    Route::get('employee/getTotalEmployee', [UserController::class, 'getTotalEmployee']);
     Route::put('employee/{id}', [UserController::class, 'update']);
     Route::get('employee/{id}', [UserController::class, 'getDetailEmployee']);
     Route::put('employee/{id}/changePassword', [UserController::class, 'changePassword']);
     Route::put('employee/{id}/activeYn', [UserController::class, 'changeActiveYn']);
+
+    // Assessment
     Route::get('assessments/{period}', [AssesmentController::class, 'index']);
     Route::get('assessments/rank/{period}', [AssesmentController::class, 'getRank']);
     Route::get('assessments/approval/{period}', [AssesmentController::class, 'assessmentsApproval']);

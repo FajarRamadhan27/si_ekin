@@ -134,4 +134,17 @@ class UserController extends Controller
             'messages' => 'Status user berhasil diperbaharui.'
         ];
     }
+
+    /**
+     * Get total employee
+     *
+     * @param  Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTotalEmployee()
+    {
+        $user = DB::select('SELECT COUNT(*) AS TOTAL_EMPLOYEE FROM USERS WHERE AKTIF_YN = ?', ['Y']);
+
+        return response()->json($user);
+    }
 }

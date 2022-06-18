@@ -192,3 +192,14 @@ export function employeeActiveYn(userId, callback) {
         })
         .catch( e => console.log(e))
 }
+
+export function getTotalEmployee(callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+
+    Axios.get(`${BASE_URL}api/employee/getTotalEmployee`)
+        .then(response => {
+            const { TOTAL_EMPLOYEE } = response.data[0]
+            console.log(TOTAL_EMPLOYEE)
+            callback(TOTAL_EMPLOYEE)
+        })
+}
