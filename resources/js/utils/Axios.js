@@ -203,3 +203,12 @@ export function getTotalEmployee(callback) {
             callback(TOTAL_EMPLOYEE)
         })
 }
+
+export function findUser(key, callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+
+    Axios.get(`${BASE_URL}api/employee/findUser/${key}`)
+        .then(response => {
+            callback(response.data)
+        })
+}

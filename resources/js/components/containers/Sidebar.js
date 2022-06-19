@@ -13,7 +13,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import { PowerSettingsNew } from '@mui/icons-material';
 import ConfirmLogOutModal from "../modals/ConfirmLogOutModal";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_HISTORY, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from "../../helpers/constant";
+import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_ASSESSMENT_INPUT, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_HISTORY, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from "../../helpers/constant";
 
 function SideBar (props) {
 
@@ -63,6 +63,15 @@ function SideBar (props) {
                         <AssignmentIcon />
                     </ListItemIcon>
                     <ListItemText primary="Index Penilaian" />
+                </ListItemButton>
+
+                <ListItemButton
+                    onClick={() => handleSidebarClick(MENU_ASSESSMENT_INPUT)}
+                >
+                    <ListItemIcon>
+                        <AssignmentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Input Penilaian" />
                 </ListItemButton>
 
             </React.Fragment>

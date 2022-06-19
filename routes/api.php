@@ -28,6 +28,7 @@ Route::middleware('sanctum')->group(function () {
     Route::delete('employee', [UserController::class, 'delete']);
     Route::get('employee/ava', [UserController::class, 'getAva']);
     Route::get('employee/getTotalEmployee', [UserController::class, 'getTotalEmployee']);
+    Route::get('employee/findUser/{key}', [UserController::class, 'findUser']);
     Route::put('employee/{id}', [UserController::class, 'update']);
     Route::get('employee/{id}', [UserController::class, 'getDetailEmployee']);
     Route::put('employee/{id}/changePassword', [UserController::class, 'changePassword']);
