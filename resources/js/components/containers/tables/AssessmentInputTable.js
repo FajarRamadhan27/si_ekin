@@ -1,35 +1,31 @@
-import Search from '../Search';
+import moment from 'moment';
 import * as React from 'react';
 import Loading from '../Loading';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import styled from '@emotion/styled';
+import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
+import Switch from '@mui/material/Switch';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import { visuallyHidden } from '@mui/utils';
+import { alpha } from '@mui/material/styles';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
-import TableContainer from '@mui/material/TableContainer';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import Switch from '@mui/material/Switch';
-import { visuallyHidden } from '@mui/utils';
-import { Alert, Button, TextField } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { assessmentShowYn, deleteEmployee, getAssessments } from '../../../utils/Axios';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import { DatePicker } from '@mui/x-date-pickers';
-import moment from 'moment';
-import styled from '@emotion/styled';
-import SearchIcon from '@mui/icons-material/Search';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 import FindUserModal from '../../modals/FindUserModal';
+import TableSortLabel from '@mui/material/TableSortLabel';
+import TableContainer from '@mui/material/TableContainer';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { Alert, Button, InputAdornment, Radio, RadioGroup, TextField } from '@mui/material';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import { assessmentShowYn, deleteEmployee, getAssessments } from '../../../utils/Axios';
+import InputAssessmentNote from '../InputAssessmentNote';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
@@ -232,7 +228,7 @@ export default function AssessmentInputTable(props) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper sx={{ width: '100%', mb: 2, pb: 4 }}>
         <EnhancedTableToolbar
             uiAttr={{
                 numSelected: selected.length,
@@ -252,6 +248,7 @@ export default function AssessmentInputTable(props) {
                     label='Karyawan'
                     onClick={() => setInputModal(true)}
                     value={employee?.NAME}
+                    InputLabelProps={{ shrink: true }}
                 />
                 {/* <IconButton sx={{ ml: 2}}>
                     <SearchIcon/>
@@ -271,54 +268,161 @@ export default function AssessmentInputTable(props) {
                 renderInput={(params) => <TextField {...params} helperText={null} />}
             />
         </div>
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={isFiltered ? assessments.forFilter.length : assessments.original.length}
-            />
-            <TableBody>
-              {stableSort(isFiltered ? assessments.forFilter : assessments.original, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                    >
-                      <TableCell>{row.nilai}</TableCell>
-                      <TableCell>{row.catatan}</TableCell>
-                      <TableCell>{row.nilai}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
+        {
+          employee &&
+            <TableContainer>
+            <Table
+              sx={{ minWidth: 750 }}
+              aria-labelledby="tableTitle"
+              size={dense ? 'small' : 'medium'}
+            >
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={isFiltered ? assessments.forFilter.length : assessments.original.length}
+              />
+              <TableBody>
                 <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={"karakter"}
                 >
-                  <TableCell colSpan={6} />
+                  <TableCell>{"Karakter"}</TableCell>
+                  <TableCell>
+                    <InputAssessmentNote/>
+                  </TableCell>
+                  <TableCell>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                    >
+                      <FormControlLabel value="1" control={<Radio />} label="1" />
+                      <FormControlLabel value="2" control={<Radio />} label="2" />
+                      <FormControlLabel value="3" control={<Radio />} label="3" />
+                      <FormControlLabel value="4" control={<Radio />} label="4" />
+                      <FormControlLabel value="5" control={<Radio />} label="5" />
+                    </RadioGroup>
+                  </TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                <TableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={"Absensi"}
+                >
+                  <TableCell>{"Absensi"}</TableCell>
+                  <TableCell>{""}</TableCell>
+                  <TableCell>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                    >
+                      <FormControlLabel value="1" control={<Radio />} label="1" />
+                      <FormControlLabel value="2" control={<Radio />} label="2" />
+                      <FormControlLabel value="3" control={<Radio />} label="3" />
+                      <FormControlLabel value="4" control={<Radio />} label="4" />
+                      <FormControlLabel value="5" control={<Radio />} label="5" />
+                    </RadioGroup>
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={"Teamwork"}
+                >
+                  <TableCell>{"Teamwork"}</TableCell>
+                  <TableCell>{""}</TableCell>
+                  <TableCell>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                    >
+                      <FormControlLabel value="1" control={<Radio />} label="1" />
+                      <FormControlLabel value="2" control={<Radio />} label="2" />
+                      <FormControlLabel value="3" control={<Radio />} label="3" />
+                      <FormControlLabel value="4" control={<Radio />} label="4" />
+                      <FormControlLabel value="5" control={<Radio />} label="5" />
+                    </RadioGroup>
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={"Pencapaian"}
+                >
+                  <TableCell>{"Pencapaian"}</TableCell>
+                  <TableCell>{""}</TableCell>
+                  <TableCell>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                    >
+                      <FormControlLabel value="1" control={<Radio />} label="1" />
+                      <FormControlLabel value="2" control={<Radio />} label="2" />
+                      <FormControlLabel value="3" control={<Radio />} label="3" />
+                      <FormControlLabel value="4" control={<Radio />} label="4" />
+                      <FormControlLabel value="5" control={<Radio />} label="5" />
+                    </RadioGroup>
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={"Loyalitas"}
+                >
+                  <TableCell>{"Loyalitas"}</TableCell>
+                  <TableCell>{""}</TableCell>
+                  <TableCell>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                    >
+                      <FormControlLabel value="1" control={<Radio />} label="1" />
+                      <FormControlLabel value="2" control={<Radio />} label="2" />
+                      <FormControlLabel value="3" control={<Radio />} label="3" />
+                      <FormControlLabel value="4" control={<Radio />} label="4" />
+                      <FormControlLabel value="5" control={<Radio />} label="5" />
+                    </RadioGroup>
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  hover
+                  role="checkbox"
+                  tabIndex={-1}
+                  key={"Efisiensi"}
+                >
+                  <TableCell>{"Efisiensi"}</TableCell>
+                  <TableCell>{""}</TableCell>
+                  <TableCell>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                    >
+                      <FormControlLabel value="1" control={<Radio />} label="1" />
+                      <FormControlLabel value="2" control={<Radio />} label="2" />
+                      <FormControlLabel value="3" control={<Radio />} label="3" />
+                      <FormControlLabel value="4" control={<Radio />} label="4" />
+                      <FormControlLabel value="5" control={<Radio />} label="5" />
+                    </RadioGroup>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        }
       </Paper>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
