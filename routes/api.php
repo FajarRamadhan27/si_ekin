@@ -42,4 +42,5 @@ Route::middleware('sanctum')->group(function () {
     Route::put('assessments/{id}/showYn', [AssesmentController::class, 'showAssessmentYn']);
     Route::put('assessments/{id}/approveYn', [AssesmentController::class, 'approveAssessmentsYn']);
     Route::get('assessments/history/{id_user}/{period}', [AssesmentController::class, 'assessmentHistory']);
+    Route::delete('assessments/{id}', [AssesmentController::class, 'deleteAssessment']);
 });

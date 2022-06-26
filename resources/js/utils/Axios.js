@@ -226,3 +226,18 @@ export function findUser(key, callback) {
             callback(response.data)
         })
 }
+
+export function deleteAssessment(callback, callback2, employeId, period, id) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+
+    Axios.delete(`${BASE_URL}api/assessments/${id}`)
+        .then( response => {
+            const { status} = response.data
+            if (status) {
+                callback({ type: 'success', message: response.data.message })
+                getUserAssessmentByPeriod(callback2, employeId, period)
+            } else {
+                callback({ type: 'warning', message: 'Warning' })
+            }
+        }).catch(e => console.log(e))
+}

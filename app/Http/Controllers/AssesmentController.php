@@ -216,35 +216,19 @@ class AssesmentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Assesment  $assesment
      * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Assesment $assesment)
+    public function deleteAssessment($id)
     {
-        //
+        DB::delete("DELETE FROM PENILAIAN WHERE ID = ? ", [$id]);
+
+        return response()->json([
+            'status' => true,
+            'message' => "Penilaian berhasil di hapus",
+        ]);
     }
 
     /**

@@ -23,9 +23,9 @@ import InputAssessmentNote from '../InputAssessmentNote';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TableContainer from '@mui/material/TableContainer';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Alert, Radio, RadioGroup, TextField } from '@mui/material';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import { assessmentShowYn, deleteEmployee, getAssessments, getUserAssessmentByPeriod } from '../../../utils/Axios';
+import { Alert, Radio, RadioGroup, TextareaAutosize, TextField } from '@mui/material';
+import { assessmentShowYn, deleteAssessment, deleteEmployee, getUserAssessmentByPeriod } from '../../../utils/Axios';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
@@ -101,7 +101,7 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
 
-  const { setInputModal, numSelected, flashMessage, setFlashMessage, selected, assessments, setAssessment, setSelected, setFilter } = props.uiAttr
+  const { setInputModal, numSelected, flashMessage, setFlashMessage, assessments, setAssessment, employee, value } = props.uiAttr
 
   if (flashMessage.type) {
     React.useEffect(() => {
@@ -114,7 +114,7 @@ const EnhancedTableToolbar = (props) => {
   }
 
   const handleDelete = () => {
-    deleteEmployee(selected, setAssessment, setFlashMessage, setSelected)
+    deleteAssessment(setFlashMessage, setAssessment, employee.ID,value.format('YYYYMM'), assessments.penilaian_id)
   }
 
   return (
@@ -133,12 +133,14 @@ const EnhancedTableToolbar = (props) => {
                 justifyItems: 'center'
             }}
         >
-            <Tooltip onClick={handleDelete} title="Hapus Penilaian">
-                <IconButton>
-                    <DeleteIcon />
-                </IconButton>
-            </Tooltip>
-
+            {
+                assessments.penilaian_id &&
+                    <Tooltip onClick={handleDelete} title="Hapus Penilaian">
+                        <IconButton>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+            }
             <Tooltip title="Simpan Penilaian">
                 <IconButton onClick={() => setInputModal(true)}>
                     <DriveFileRenameOutlineIcon/>
@@ -204,10 +206,12 @@ export default function AssessmentInputTable(props) {
                 setSelected,
                 assessments,
                 setAssessment,
-                setFilter
+                setFilter,
+                employee,
+                value
             }}
         />
-        <div className='flex mx-4 my-6 items-center justify-between text-sm '>
+        <div className='flex m-4 items-center justify-between text-sm '>
             <div className='flex items-center'>
                 <TextField
                     label='Karyawan'
@@ -228,6 +232,14 @@ export default function AssessmentInputTable(props) {
                 value={value}
                 onChange={(newValue) => handleDateChange(newValue)}
                 renderInput={(params) => <TextField {...params} helperText={null} />}
+            />
+        </div>
+        <div className='m-4'>
+            <TextareaAutosize
+                aria-label="empty textarea"
+                minRows={3}
+                placeholder="Masukan catatan disni..."
+                style={{ width: "100%", borderWidth: "1px", padding: 2 }}
             />
         </div>
         {
