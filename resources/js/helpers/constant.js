@@ -41,3 +41,30 @@ export const roles = [
         label   : 'Karyawan'
     }
 ]
+
+export const kpiIndex = [
+    {
+        key: 'karakter',
+        label: 'Karakter'
+    },
+    {
+        key: 'absensi',
+        label: 'Absensi'
+    },
+    {
+        key: 'teamwork',
+        label: 'Teamwork'
+    },
+    {
+        key: 'pencapaian',
+        label: 'Pencapaian'
+    },
+    {
+        key: 'loyalitas',
+        label: 'Loyalitas'
+    },
+    {
+        key: 'efisiensi',
+        label: 'Efisiensi'
+    }
+]

@@ -3,9 +3,8 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useDispatch } from 'react-redux';
 import { Divider, ListItemButton, TextField } from '@mui/material';
-import { findUser } from '../../utils/Axios';
+import { findUser, getUserAssessmentByPeriod } from '../../utils/Axios';
 
 const style = {
   position: 'absolute',
@@ -23,7 +22,7 @@ export default function FindUserModal(props) {
 
   const [employees, setEmployees] = React.useState(null)
   const [selectedIndex, setSelectedIndex] = React.useState(null)
-  const { inputModal, setInputModal, setEmployee } = props.uiAttr
+  const {inputModal, setInputModal, setEmployee, setAssessment, value } = props.uiAttr
 
   const handleTextChange = (event) => {
     findUser(event.target.value, setEmployees);
@@ -32,6 +31,7 @@ export default function FindUserModal(props) {
   const handleSaveClick = () => {
     setEmployee(employees[selectedIndex])
     setInputModal(false)
+    getUserAssessmentByPeriod(setAssessment, employees[selectedIndex].ID, value.format('YYYYMM'))
   }
 
   return (

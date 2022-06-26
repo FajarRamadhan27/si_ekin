@@ -1,6 +1,5 @@
 import moment from 'moment';
 import * as React from 'react';
-import Loading from '../Loading';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import styled from '@emotion/styled';
@@ -18,48 +17,21 @@ import TableHead from '@mui/material/TableHead';
 import { DatePicker } from '@mui/x-date-pickers';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { kpiIndex } from '../../../helpers/constant';
 import FindUserModal from '../../modals/FindUserModal';
+import InputAssessmentNote from '../InputAssessmentNote';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TableContainer from '@mui/material/TableContainer';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Alert, Button, InputAdornment, Radio, RadioGroup, TextField } from '@mui/material';
+import { Alert, Radio, RadioGroup, TextField } from '@mui/material';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import { assessmentShowYn, deleteEmployee, getAssessments } from '../../../utils/Axios';
-import InputAssessmentNote from '../InputAssessmentNote';
+import { assessmentShowYn, deleteEmployee, getAssessments, getUserAssessmentByPeriod } from '../../../utils/Axios';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
         backgroundColor: 'aqua'
    }
 }))
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 
 const headCells = [
   {
@@ -161,17 +133,17 @@ const EnhancedTableToolbar = (props) => {
                 justifyItems: 'center'
             }}
         >
-                <Tooltip onClick={handleDelete} title="Hapus Penilaian">
-                    <IconButton>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+            <Tooltip onClick={handleDelete} title="Hapus Penilaian">
+                <IconButton>
+                    <DeleteIcon />
+                </IconButton>
+            </Tooltip>
 
-                <Tooltip title="Simpan Penilaian">
-                    <IconButton onClick={() => setInputModal(true)}>
-                        <DriveFileRenameOutlineIcon/>
-                    </IconButton>
-                </Tooltip>
+            <Tooltip title="Simpan Penilaian">
+                <IconButton onClick={() => setInputModal(true)}>
+                    <DriveFileRenameOutlineIcon/>
+                </IconButton>
+            </Tooltip>
         </Toolbar>
     </>
   );
@@ -185,11 +157,9 @@ export default function AssessmentInputTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('id');
   const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [inputModal, setInputModal] = React.useState(false)
-  const [assessments, setAssessment] = React.useState(null)
+  const [assessments, setAssessment] = React.useState({ id: null, approve_yn: null, karakter: null, absensi: null, teamwork: null, pencapaian: null, loyalitas: null, efisiensi: null})
   const [flashMessage, setFlashMessage] = React.useState({ type: null, message: null})
   const [employee, setEmployee] = React.useState(null)
   const [isFiltered, setFilter] = React.useState(false)
@@ -210,21 +180,16 @@ export default function AssessmentInputTable(props) {
         setSelected([]);
     };
 
-    React.useEffect(() => {
-        getAssessments(setAssessment,value.format('YYYYMM'))
-    }, [])
-
-    if (!assessments) {
-        return <Loading uiAttr={{ open: assessments === null }}/>
-    }
-
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assessments.length) : 0;
+  const handleDateChange = (newValue) => {
+    setValue(newValue)
+    if (employee) {
+      getUserAssessmentByPeriod(setAssessment,employee.ID,newValue.format('YYYYMM'))
+    }
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -261,10 +226,7 @@ export default function AssessmentInputTable(props) {
                 minDate={moment(new Date('2022-01-01'))}
                 maxDate={moment(new Date('2025-12-31'))}
                 value={value}
-                onChange={(newValue) => {
-                    setValue(newValue)
-                    getAssessments(setAssessment, newValue.format('YYYYMM'))
-                }}
+                onChange={(newValue) => handleDateChange(newValue)}
                 renderInput={(params) => <TextField {...params} helperText={null} />}
             />
         </div>
@@ -282,143 +244,40 @@ export default function AssessmentInputTable(props) {
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
                 onRequestSort={handleRequestSort}
-                rowCount={isFiltered ? assessments.forFilter.length : assessments.original.length}
               />
               <TableBody>
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={"karakter"}
-                >
-                  <TableCell>{"Karakter"}</TableCell>
-                  <TableCell>
-                    <InputAssessmentNote/>
-                  </TableCell>
-                  <TableCell>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                    >
-                      <FormControlLabel value="1" control={<Radio />} label="1" />
-                      <FormControlLabel value="2" control={<Radio />} label="2" />
-                      <FormControlLabel value="3" control={<Radio />} label="3" />
-                      <FormControlLabel value="4" control={<Radio />} label="4" />
-                      <FormControlLabel value="5" control={<Radio />} label="5" />
-                    </RadioGroup>
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={"Absensi"}
-                >
-                  <TableCell>{"Absensi"}</TableCell>
-                  <TableCell>{""}</TableCell>
-                  <TableCell>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                    >
-                      <FormControlLabel value="1" control={<Radio />} label="1" />
-                      <FormControlLabel value="2" control={<Radio />} label="2" />
-                      <FormControlLabel value="3" control={<Radio />} label="3" />
-                      <FormControlLabel value="4" control={<Radio />} label="4" />
-                      <FormControlLabel value="5" control={<Radio />} label="5" />
-                    </RadioGroup>
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={"Teamwork"}
-                >
-                  <TableCell>{"Teamwork"}</TableCell>
-                  <TableCell>{""}</TableCell>
-                  <TableCell>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                    >
-                      <FormControlLabel value="1" control={<Radio />} label="1" />
-                      <FormControlLabel value="2" control={<Radio />} label="2" />
-                      <FormControlLabel value="3" control={<Radio />} label="3" />
-                      <FormControlLabel value="4" control={<Radio />} label="4" />
-                      <FormControlLabel value="5" control={<Radio />} label="5" />
-                    </RadioGroup>
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={"Pencapaian"}
-                >
-                  <TableCell>{"Pencapaian"}</TableCell>
-                  <TableCell>{""}</TableCell>
-                  <TableCell>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                    >
-                      <FormControlLabel value="1" control={<Radio />} label="1" />
-                      <FormControlLabel value="2" control={<Radio />} label="2" />
-                      <FormControlLabel value="3" control={<Radio />} label="3" />
-                      <FormControlLabel value="4" control={<Radio />} label="4" />
-                      <FormControlLabel value="5" control={<Radio />} label="5" />
-                    </RadioGroup>
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={"Loyalitas"}
-                >
-                  <TableCell>{"Loyalitas"}</TableCell>
-                  <TableCell>{""}</TableCell>
-                  <TableCell>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                    >
-                      <FormControlLabel value="1" control={<Radio />} label="1" />
-                      <FormControlLabel value="2" control={<Radio />} label="2" />
-                      <FormControlLabel value="3" control={<Radio />} label="3" />
-                      <FormControlLabel value="4" control={<Radio />} label="4" />
-                      <FormControlLabel value="5" control={<Radio />} label="5" />
-                    </RadioGroup>
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={"Efisiensi"}
-                >
-                  <TableCell>{"Efisiensi"}</TableCell>
-                  <TableCell>{""}</TableCell>
-                  <TableCell>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                    >
-                      <FormControlLabel value="1" control={<Radio />} label="1" />
-                      <FormControlLabel value="2" control={<Radio />} label="2" />
-                      <FormControlLabel value="3" control={<Radio />} label="3" />
-                      <FormControlLabel value="4" control={<Radio />} label="4" />
-                      <FormControlLabel value="5" control={<Radio />} label="5" />
-                    </RadioGroup>
-                  </TableCell>
-                </TableRow>
+                {
+                    kpiIndex.map(index => {
+                        return (
+                            <TableRow
+                                hover
+                                role="checkbox"
+                                tabIndex={-1}
+                                key={index.key}
+                            >
+                                <TableCell>{index.label}</TableCell>
+                                <TableCell>
+                                    <InputAssessmentNote/>
+                                </TableCell>
+                                <TableCell>
+                                    <RadioGroup
+                                        row
+                                        key={assessments.id}
+                                        aria-labelledby="demo-row-radio-buttons-group-label"
+                                        name="row-radio-buttons-group"
+                                        value={assessments[index.key]}
+                                    >
+                                        <FormControlLabel value="1" control={<Radio />} label="1" disabled={assessments.approve_yn === 'Y'}/>
+                                        <FormControlLabel value="2" control={<Radio />} label="2" disabled={assessments.approve_yn === 'Y'}/>
+                                        <FormControlLabel value="3" control={<Radio />} label="3" disabled={assessments.approve_yn === 'Y'}/>
+                                        <FormControlLabel value="4" control={<Radio />} label="4" disabled={assessments.approve_yn === 'Y'}/>
+                                        <FormControlLabel value="5" control={<Radio />} label="5" disabled={assessments.approve_yn === 'Y'}/>
+                                    </RadioGroup>
+                                </TableCell>
+                            </TableRow>
+                        )
+                    })
+                }
               </TableBody>
             </Table>
           </TableContainer>
@@ -428,7 +287,7 @@ export default function AssessmentInputTable(props) {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
-      { inputModal && <FindUserModal uiAttr={{ inputModal, setInputModal, setEmployee }}/> }
+      { inputModal && <FindUserModal uiAttr={{ inputModal, setInputModal, setEmployee, setAssessment, value }}/> }
     </Box>
   );
 }

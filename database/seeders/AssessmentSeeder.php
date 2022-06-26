@@ -22,14 +22,14 @@ class AssessmentSeeder extends Seeder
             $assessments = [];
 
             do {
-                $karakter = rand(60, 100);
-                    $absensi = rand(60, 100);
-                    $teamwork = rand(60, 100);
-                    $pencapaian = rand(60, 100);
-                    $loyalitas = rand(60, 100);
-                    $efisiensi = rand(60, 100);
+                $karakter = rand(1, 5);
+                $absensi = rand(1, 5);
+                $teamwork = rand(1, 5);
+                $pencapaian = rand(1, 5);
+                $loyalitas = rand(1, 5);
+                $efisiensi = rand(1, 5);
 
-                    $nilaiAkhir = ($karakter + $absensi + $teamwork + $pencapaian + $loyalitas + $efisiensi) / 6;
+                $nilaiAkhir = ($karakter + $absensi + $teamwork + $pencapaian + $loyalitas + $efisiensi) / 6;
 
                 $assessment = [
                     'tanggal' => '20220'.$i,

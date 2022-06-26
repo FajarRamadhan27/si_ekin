@@ -13,6 +13,21 @@ export function getEmployees(callback) {
         }).catch(e => console.log(e))
 }
 
+export function getUserAssessmentByPeriod(callback,userId,period) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/assessments/getUserAssessmentByPeriod/${userId}/${period}`)
+        .then( response => {
+            console.log(response);
+            if (response.status === 200) {
+                if (response.data.length < 1) {
+                    callback({ approve_yn: null, karakter: null, absensi: null, teamwork: null, pencapaian: null, loyalitas: null, efisiensi: null})
+                } else {
+                    callback(response.data[0])
+                }
+            }
+        }).catch(e => console.log(e))
+}
+
 export function getAssessments(callback, period) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.get(`${BASE_URL}api/assessments/${period}`)
@@ -199,7 +214,6 @@ export function getTotalEmployee(callback) {
     Axios.get(`${BASE_URL}api/employee/getTotalEmployee`)
         .then(response => {
             const { TOTAL_EMPLOYEE } = response.data[0]
-            console.log(TOTAL_EMPLOYEE)
             callback(TOTAL_EMPLOYEE)
         })
 }
