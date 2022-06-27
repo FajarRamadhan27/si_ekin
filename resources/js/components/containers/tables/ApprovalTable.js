@@ -19,6 +19,7 @@ import TableHead from '@mui/material/TableHead';
 import CheckIcon from '@mui/icons-material/Check';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import TableContainer from '@mui/material/TableContainer';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TablePagination from '@mui/material/TablePagination';
@@ -28,8 +29,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Alert, Button, TextField } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { approveYn, bulkApproveAssessments, deleteEmployee, getApproval} from '../../../utils/Axios';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import { approveYn, bulkApproveAssessments, getApproval} from '../../../utils/Axios';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
@@ -238,9 +238,9 @@ const EnhancedTableToolbar = (props) => {
 
             {
                 numSelected > 0 && (
-                    <Tooltip onClick={handleDelete} title="Delete">
+                    <Tooltip onClick={handleDelete} title="Approve">
                     <IconButton>
-                        <DeleteIcon />
+                        <CheckBoxIcon/>
                     </IconButton>
                     </Tooltip>
                 )

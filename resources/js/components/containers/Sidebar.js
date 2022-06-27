@@ -13,6 +13,11 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import { PowerSettingsNew } from '@mui/icons-material';
 import ConfirmLogOutModal from "../modals/ConfirmLogOutModal";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import InputIcon from '@mui/icons-material/Input';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import HistoryIcon from '@mui/icons-material/History';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import BallotIcon from '@mui/icons-material/Ballot';
 import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_ASSESSMENT_INPUT, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_HISTORY, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from "../../helpers/constant";
 
 function SideBar (props) {
@@ -69,7 +74,7 @@ function SideBar (props) {
                     onClick={() => handleSidebarClick(MENU_ASSESSMENT_INPUT)}
                 >
                     <ListItemIcon>
-                        <AssignmentIcon />
+                        <InputIcon />
                     </ListItemIcon>
                     <ListItemText primary="Input Penilaian" />
                 </ListItemButton>
@@ -85,7 +90,7 @@ function SideBar (props) {
                     onClick={() => handleSidebarClick(MENU_MY_ASSESSMENT)}
                 >
                     <ListItemIcon>
-                        <LibraryBooksIcon />
+                        <AssessmentIcon />
                     </ListItemIcon>
                     <ListItemText primary="Penilaian Saya" />
                 </ListItemButton>
@@ -110,7 +115,7 @@ function SideBar (props) {
                     onClick={() => handleSidebarClick(MENU_RANKING)}
                 >
                     <ListItemIcon>
-                        <AssignmentIcon />
+                        <AutoGraphIcon />
                     </ListItemIcon>
                     <ListItemText primary="Rangking" />
                 </ListItemButton>
@@ -119,7 +124,7 @@ function SideBar (props) {
                     onClick={() => handleSidebarClick(MENU_MY_SCORE)}
                 >
                     <ListItemIcon>
-                        <AssignmentIcon />
+                        <BallotIcon />
                     </ListItemIcon>
                     <ListItemText primary="Nilai Saya" />
                 </ListItemButton>
@@ -128,7 +133,7 @@ function SideBar (props) {
                     onClick={() => handleSidebarClick(MENU_HISTORY)}
                 >
                     <ListItemIcon>
-                        <AssignmentIcon />
+                        <HistoryIcon />
                     </ListItemIcon>
                     <ListItemText primary="History" />
                 </ListItemButton>

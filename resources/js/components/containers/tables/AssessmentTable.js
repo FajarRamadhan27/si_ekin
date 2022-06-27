@@ -26,7 +26,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
 import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments } from '../../../utils/Axios';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { DatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import styled from '@emotion/styled';
@@ -238,9 +238,9 @@ const EnhancedTableToolbar = (props) => {
 
             {
                 numSelected > 0 && (
-                    <Tooltip onClick={handleDelete} title="Delete">
+                    <Tooltip onClick={handleDelete} title="Show Assessments">
                     <IconButton>
-                        <DeleteIcon />
+                        <VisibilityIcon />
                     </IconButton>
                     </Tooltip>
                 )
