@@ -236,19 +236,15 @@ const EnhancedTableToolbar = (props) => {
                 <Search sx={{ background: '#DCDCDC' }} data={{ data: assessments, setData: setAssessment, setFilter }}/>
             )}
 
-            {numSelected > 0 ? (
-                <Tooltip onClick={handleDelete} title="Delete">
-                <IconButton>
-                    <DeleteIcon />
-                </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Input Karyawan">
-                <IconButton onClick={() => setInputModal(true)}>
-                    <DriveFileRenameOutlineIcon/>
-                </IconButton>
-                </Tooltip>
-            )}
+            {
+                numSelected > 0 && (
+                    <Tooltip onClick={handleDelete} title="Delete">
+                    <IconButton>
+                        <DeleteIcon />
+                    </IconButton>
+                    </Tooltip>
+                )
+            }
         </Toolbar>
     </>
   );
