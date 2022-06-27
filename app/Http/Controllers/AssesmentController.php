@@ -33,6 +33,7 @@ class AssesmentController extends Controller
                 'penilaian.tanggal'
             )
             ->where('penilaian.tanggal', '=', $period)
+            ->where('penilaian.approve_yn', '!=', 'Y' )
             ->orderBy('users.name')
             ->get();
 
