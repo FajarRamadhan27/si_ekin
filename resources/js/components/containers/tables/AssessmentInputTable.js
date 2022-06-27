@@ -14,6 +14,7 @@ import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
+import SaveIcon from '@mui/icons-material/Save';
 import { DatePicker } from '@mui/x-date-pickers';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -23,9 +24,8 @@ import InputAssessmentNote from '../InputAssessmentNote';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import TableContainer from '@mui/material/TableContainer';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import { createOrEditAssessment, deleteAssessment, getUserAssessmentByPeriod } from '../../../utils/Axios';
 import { Alert, Radio, RadioGroup, TextareaAutosize, TextField } from '@mui/material';
-import { assessmentShowYn, deleteAssessment, deleteEmployee, getUserAssessmentByPeriod } from '../../../utils/Axios';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
@@ -101,7 +101,7 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
 
-  const { setInputModal, numSelected, flashMessage, setFlashMessage, assessments, setAssessment, employee, value } = props.uiAttr
+  const { numSelected, flashMessage, setFlashMessage, assessments, setAssessment, employee, value } = props.uiAttr
 
   if (flashMessage.type) {
     React.useEffect(() => {
@@ -115,6 +115,17 @@ const EnhancedTableToolbar = (props) => {
 
   const handleDelete = () => {
     deleteAssessment(setFlashMessage, setAssessment, employee.ID,value.format('YYYYMM'), assessments.penilaian_id)
+  }
+
+  const handleSave = () => {
+
+    let emptyKpi = kpiIndex.find(kpi => !assessments[kpi.key])
+
+    if (emptyKpi) {
+        setFlashMessage({ type: 'warning', message: `KPI index ${emptyKpi.key} masih kosong!`})
+    }
+
+    createOrEditAssessment(setFlashMessage, setAssessment, employee.ID,value.format('YYYYMM'), assessments)
   }
 
   return (
@@ -142,8 +153,8 @@ const EnhancedTableToolbar = (props) => {
                     </Tooltip>
             }
             <Tooltip title="Simpan Penilaian">
-                <IconButton onClick={() => setInputModal(true)}>
-                    <DriveFileRenameOutlineIcon/>
+                <IconButton onClick={handleSave}>
+                    <SaveIcon/>
                 </IconButton>
             </Tooltip>
         </Toolbar>
@@ -161,7 +172,7 @@ export default function AssessmentInputTable(props) {
   const [selected, setSelected] = React.useState([]);
   const [dense, setDense] = React.useState(false);
   const [inputModal, setInputModal] = React.useState(false)
-  const [assessments, setAssessment] = React.useState({ id: null, approve_yn: null, karakter: null, absensi: null, teamwork: null, pencapaian: null, loyalitas: null, efisiensi: null})
+  const [assessments, setAssessment] = React.useState({ id: null, approve_yn: null, karakter: null, absensi: null, teamwork: null, pencapaian: null, loyalitas: null, efisiensi: null, catatan: null})
   const [flashMessage, setFlashMessage] = React.useState({ type: null, message: null})
   const [employee, setEmployee] = React.useState(null)
   const [isFiltered, setFilter] = React.useState(false)
@@ -191,6 +202,14 @@ export default function AssessmentInputTable(props) {
     if (employee) {
       getUserAssessmentByPeriod(setAssessment,employee.ID,newValue.format('YYYYMM'))
     }
+  }
+
+  const handleRuddioButtonChange = (event, key) => {
+    setAssessment({ ...assessments, [key]:event.target.value})
+  }
+
+  const handleNoteChange = (event) => {
+    setAssessment({ ...assessments, catatan: event.target.value })
   }
 
   return (
@@ -240,6 +259,8 @@ export default function AssessmentInputTable(props) {
                 minRows={3}
                 placeholder="Masukan catatan disni..."
                 style={{ width: "100%", borderWidth: "1px", padding: 2 }}
+                onChange={(event) => handleNoteChange(event)}
+                value={assessments.catatan}
             />
         </div>
         {
@@ -278,6 +299,7 @@ export default function AssessmentInputTable(props) {
                                         aria-labelledby="demo-row-radio-buttons-group-label"
                                         name="row-radio-buttons-group"
                                         value={assessments[index.key]}
+                                        onChange={(event) => handleRuddioButtonChange(event, index.key)}
                                     >
                                         <FormControlLabel value="1" control={<Radio />} label="1" disabled={assessments.approve_yn === 'Y'}/>
                                         <FormControlLabel value="2" control={<Radio />} label="2" disabled={assessments.approve_yn === 'Y'}/>

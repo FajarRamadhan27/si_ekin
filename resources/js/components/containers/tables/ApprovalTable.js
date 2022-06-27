@@ -28,7 +28,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Alert, Button, TextField } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { approveYn, deleteEmployee, getApproval} from '../../../utils/Axios';
+import { approveYn, bulkApproveAssessments, deleteEmployee, getApproval} from '../../../utils/Axios';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
@@ -192,7 +192,7 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
 
-  const { setInputModal, numSelected, flashMessage, setFlashMessage, selected, assessments, setAssessment, setSelected, setFilter } = props.uiAttr
+  const { setInputModal, numSelected, flashMessage, setFlashMessage, selected, assessments, setAssessment, setSelected, setFilter, period } = props.uiAttr
 
   if (flashMessage.type) {
     React.useEffect(() => {
@@ -205,7 +205,7 @@ const EnhancedTableToolbar = (props) => {
   }
 
   const handleDelete = () => {
-    deleteEmployee(selected, setAssessment, setFlashMessage, setSelected)
+    bulkApproveAssessments(selected, setAssessment, setFlashMessage, setSelected, period)
   }
 
   return (
@@ -358,7 +358,8 @@ export default function ApprovalTable(props) {
                 setSelected,
                 assessments,
                 setAssessment,
-                setFilter
+                setFilter,
+                period: value.format('YYYYMM')
             }}
         />
         <div className='flex mx-4 my-6 items-center justify-end text-sm '>

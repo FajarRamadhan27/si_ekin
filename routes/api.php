@@ -39,6 +39,9 @@ Route::middleware('sanctum')->group(function () {
     Route::get('assessments/getUserAssessmentByPeriod/{userId}/{period}', [AssesmentController::class, 'getUserAssessmentByPeriod']);
     Route::get('assessments/rank/{period}', [AssesmentController::class, 'getRank']);
     Route::get('assessments/approval/{period}', [AssesmentController::class, 'assessmentsApproval']);
+    Route::put('assessments', [AssesmentController::class, 'edit']);
+    Route::put('assessments/bulkShowYn', [AssesmentController::class, 'bulkShowYn']);
+    Route::put('assessments/bulkApprove', [AssesmentController::class, 'bulkApprove']);
     Route::put('assessments/{id}/showYn', [AssesmentController::class, 'showAssessmentYn']);
     Route::put('assessments/{id}/approveYn', [AssesmentController::class, 'approveAssessmentsYn']);
     Route::get('assessments/history/{id_user}/{period}', [AssesmentController::class, 'assessmentHistory']);

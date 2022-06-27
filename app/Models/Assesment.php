@@ -26,7 +26,19 @@ class Assesment extends Model
      * @var array
      */
     protected $fillable = [
-        'id','tanggal', 'id_user', 'karakter', 'absensi', 'teamwork', 'pencapaian', 'loyalitas', 'efisiensi', 'nilai_akhir', 'catatan', 'tampilkan_hasil'
+        'id'
+        ,'tanggal'
+        , 'id_user'
+        , 'karakter'
+        , 'absensi'
+        , 'teamwork'
+        , 'pencapaian'
+        , 'loyalitas'
+        , 'efisiensi'
+        , 'nilai_akhir'
+        , 'catatan'
+        , 'tampilkan_hasil'
+        , 'approve_yn'
     ];
 
     /**

@@ -103,6 +103,36 @@ export function deleteEmployee(ids, callback, callback2, callback3) {
         }).catch(e => console.log(e))
 }
 
+export function bulkShowAssessments(ids, callback, callback2, callback3, period) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.put(`${BASE_URL}api/assessments/bulkShowYn`, {ids})
+        .then( response => {
+            const { status, message } = response.data
+            if (status === true) {
+                getAssessments(callback, period)
+                callback2({type: 'success', message})
+                callback3([])
+            } else {
+                console.log(response)
+            }
+        }).catch(e => console.log(e))
+}
+
+export function bulkApproveAssessments(ids, callback, callback2, callback3, period) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.put(`${BASE_URL}api/assessments/bulkApprove`, {ids})
+        .then( response => {
+            const { status, message } = response.data
+            if (status === true) {
+                getApproval(callback, period)
+                callback2({type: 'success', message})
+                callback3([])
+            } else {
+                console.log(response)
+            }
+        }).catch(e => console.log(e))
+}
+
 export function updateEmployee(data, id, callback) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.put(`${BASE_URL}api/employee/${id}`, { ...data })
@@ -232,9 +262,24 @@ export function deleteAssessment(callback, callback2, employeId, period, id) {
 
     Axios.delete(`${BASE_URL}api/assessments/${id}`)
         .then( response => {
-            const { status} = response.data
+            const { status, message } = response.data
             if (status) {
-                callback({ type: 'success', message: response.data.message })
+                callback({ type: 'success', message })
+                getUserAssessmentByPeriod(callback2, employeId, period)
+            } else {
+                callback({ type: 'warning', message: 'Warning' })
+            }
+        }).catch(e => console.log(e))
+}
+
+export function createOrEditAssessment(callback, callback2, employeeId, period, data) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+
+    Axios.put(`${BASE_URL}api/assessments`, {...data, period, user_id: employeeId})
+        .then(response => {
+            const { status, message } = response.data
+            if (status) {
+                callback({ type: 'success', message })
                 getUserAssessmentByPeriod(callback2, employeId, period)
             } else {
                 callback({ type: 'warning', message: 'Warning' })

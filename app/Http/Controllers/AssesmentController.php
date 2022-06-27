@@ -234,24 +234,76 @@ class AssesmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Assesment  $assesment
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function edit(Assesment $assesment)
+    public function edit(Request $request)
     {
-        //
+        DB::table('penilaian')
+            ->updateOrInsert(
+                [
+                    'id' => $request->penilaian_id,
+                ],
+                [
+                    'tanggal' => $request->period,
+                    'id_user' => $request->user_id,
+                    'karakter' => $request->karakter,
+                    'absensi' => $request->absensi,
+                    'teamwork' => $request->teamwork,
+                    'pencapaian' => $request->pencapaian,
+                    'loyalitas' => $request->loyalitas,
+                    'efisiensi' => $request->efisiensi,
+                    'nilai_akhir' => 5,
+                    'catatan' => $request->catatan,
+                    'tampilkan_hasil' => 'N',
+                    'approve_yn' => 'N'
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'message' => "Penilaian berhasil disimpan",
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Assesment  $assesment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Assesment $assesment)
+    public function bulkShowYn(Request $request)
     {
-        //
+        DB::table('penilaian')->whereIn('id', $request->ids)
+            ->lazyById()->each(function ($assessment) {
+                DB::table('penilaian')
+                    ->where('id', $assessment->id)
+                    ->update(['tampilkan_hasil' => $assessment->tampilkan_hasil === 'Y' ? 'N' : 'Y']);
+            });
+
+        return response()->json([
+            'status' => true, 'message' => 'Penilaian berhasil diperbaharui.'
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkApprove(Request $request)
+    {
+        DB::table('penilaian')->whereIn('id', $request->ids)
+            ->lazyById()->each(function ($assessment) {
+                DB::table('penilaian')
+                    ->where('id', $assessment->id)
+                    ->update(['approve_yn' => $assessment->approve_yn === 'Y' ? 'N' : 'Y']);
+            });
+
+        return response()->json([
+            'status' => true, 'message' => 'Penilaian berhasil diperbaharui.'
+        ]);
     }
 
     /**
