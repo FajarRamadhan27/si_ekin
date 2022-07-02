@@ -15,7 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            AssessmentSeeder::class
+            AssessmentSeeder::class,
+            KpiIndexSeeder::class,
+            KpiMappingSeeder::class
         ]);
     }
 }
