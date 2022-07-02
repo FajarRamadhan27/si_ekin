@@ -28,6 +28,16 @@ export function getUserAssessmentByPeriod(callback,userId,period) {
         }).catch(e => console.log(e))
 }
 
+export function getKpiIndex(callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/assessments/kpi/getKpiIndex`)
+        .then( response => {
+            if (response.status === 200) {
+                    callback(response.data)
+            }
+        }).catch(e => console.log(e))
+}
+
 export function getAssessments(callback, period) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.get(`${BASE_URL}api/assessments/${period}`)

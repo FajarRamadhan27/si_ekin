@@ -125,6 +125,28 @@ class AssesmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function kpiIndex()
+    {
+        $sql = "
+            SELECT MST.LABEL
+                , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Karakter') AS Karakter
+                , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Absensi') AS Absensi
+                , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Teamwork') AS Teamwork
+                , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Pencapaian') AS Pencapaian
+                , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Loyalitas') AS Loyalitas
+                , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Efisiensi') AS Efisiensi
+            FROM mst_kpi_index MST";
+
+        $user = DB::select(str_replace("\n", "", $sql), []);
+
+        return response()->json($user);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getRank($period)
     {
         $user = DB::table('users')

@@ -205,7 +205,7 @@ class KpiMappingSeeder extends Seeder
             [
                 'kpi_key_from' => 'Efisiensi',
                 'kpi_key_to' => 'Efisiensi',
-                'point' => 3
+                'point' => 1
             ],
         ];
 

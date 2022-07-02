@@ -24,7 +24,7 @@ import { visuallyHidden } from '@mui/utils';
 import { Alert, Button, TextField } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments } from '../../../utils/Axios';
+import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments, getKpiIndex } from '../../../utils/Axios';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { DatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
@@ -220,9 +220,7 @@ export default function AHPTable(props) {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('id');
   const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [inputModal, setInputModal] = React.useState(false)
   const [assessments, setAssessment] = React.useState(null)
   const [flashMessage, setFlashMessage] = React.useState({ type: null, message: null})
@@ -246,62 +244,16 @@ export default function AHPTable(props) {
     };
 
     React.useEffect(() => {
-        getAssessments(setAssessment,value.format('YYYYMM'))
+        getKpiIndex(setAssessment)
     }, [])
 
     if (!assessments) {
         return <Loading uiAttr={{ open: assessments === null }}/>
     }
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    setSelected(newSelected);
-  };
-
-  const handleButtonShowYn = (event, assessment) => {
-    event.preventDefault()
-
-    const { tampilkan_hasil, id } = assessment
-
-    assessmentShowYn(
-        setFlashMessage,
-        { id, showYn : tampilkan_hasil === 'Y' ? 'N' : 'Y' },
-        setAssessment,
-        value.format('YYYYMM')
-    )
-  }
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
-
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assessments.length) : 0;
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -332,20 +284,27 @@ export default function AHPTable(props) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={isFiltered ? assessments.forFilter.length : assessments.original.length}
             />
             <TableBody>
                 {
-                    kpiIndex.map(kpi => {
+                    assessments.map(kpi => {
                         return (
-                            <TableRow
-                                hover
-                                role="checkbox"
-                                tabIndex={-1}
-                                key={kpi.key}
-                            >
-                                <TableCell>{kpi.label}</TableCell>
-                            </TableRow>
+                            <>
+                                <TableRow
+                                    hover
+                                    role="checkbox"
+                                    tabIndex={-1}
+                                    key={kpi.LABEL}
+                                >
+                                    <TableCell>{kpi.LABEL}</TableCell>
+                                    <TableCell>{kpi.Karakter}</TableCell>
+                                    <TableCell>{kpi.Absensi}</TableCell>
+                                    <TableCell>{kpi.Teamwork}</TableCell>
+                                    <TableCell>{kpi.Pencapaian}</TableCell>
+                                    <TableCell>{kpi.Loyalitas}</TableCell>
+                                    <TableCell>{kpi.Efisiensi}</TableCell>
+                                </TableRow>
+                            </>
                         )
                     })
                 }
