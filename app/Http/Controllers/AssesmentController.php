@@ -135,6 +135,7 @@ class AssesmentController extends Controller
                 , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Pencapaian') AS Pencapaian
                 , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Loyalitas') AS Loyalitas
                 , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Efisiensi') AS Efisiensi
+                , (SELECT ROUND(SUM(POINT), 2) FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from) nilai_akhir
             FROM mst_kpi_index MST";
 
         $user = DB::select(str_replace("\n", "", $sql), []);

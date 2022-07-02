@@ -121,6 +121,12 @@ const headCells = [
     disablePadding: false,
     label: 'Tampilkan Hasil',
   },
+  {
+    id: 'nilai_akhir',
+    numeric: false,
+    disablePadding: false,
+    label: 'Nilai AKhir',
+  },
 ];
 
 function EnhancedTableHead(props) {
@@ -150,6 +156,13 @@ function EnhancedTableHead(props) {
                 )
             })
         }
+        <TableCell
+            key={"cross"}
+            align={'left'}
+            padding={'normal'}
+        >
+            Nilai Akhir
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -303,6 +316,7 @@ export default function AHPTable(props) {
                                     <TableCell>{kpi.Pencapaian}</TableCell>
                                     <TableCell>{kpi.Loyalitas}</TableCell>
                                     <TableCell>{kpi.Efisiensi}</TableCell>
+                                    <TableCell>{kpi.nilai_akhir}</TableCell>
                                 </TableRow>
                             </>
                         )
