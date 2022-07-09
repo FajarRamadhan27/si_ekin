@@ -38,6 +38,16 @@ export function getKpiIndex(callback) {
         }).catch(e => console.log(e))
 }
 
+export function getKpiNormalization(callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/assessments/kpi/getKpiNormalization`)
+        .then( response => {
+            if (response.status === 200) {
+                    callback(response.data)
+            }
+        }).catch(e => console.log(e))
+}
+
 export function getAssessments(callback, period) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.get(`${BASE_URL}api/assessments/${period}`)

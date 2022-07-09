@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AssessmentSeeder::class,
             KpiIndexSeeder::class,
-            KpiMappingSeeder::class
+            KpiMappingSeeder::class,
+            KpiMatrixPairsSummarySeeder::class
         ]);
     }
 }

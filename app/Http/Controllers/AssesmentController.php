@@ -135,8 +135,58 @@ class AssesmentController extends Controller
                 , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Pencapaian') AS Pencapaian
                 , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Loyalitas') AS Loyalitas
                 , (SELECT POINT FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Efisiensi') AS Efisiensi
-                , (SELECT ROUND(SUM(POINT), 2) FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from) nilai_akhir
-            FROM mst_kpi_index MST";
+            FROM mst_kpi_index MST
+            UNION ALL
+            SELECT 'Jumlah' LABEL
+                , (SELECT POINT FROM kpi_point_summary WHERE `key` = 'Karakter' AND TYPE ='MATRIX_PAIRS') AS Karakter
+                , (SELECT POINT FROM kpi_point_summary WHERE `key` = 'Absensi' AND TYPE ='MATRIX_PAIRS') AS Absensi
+                , (SELECT POINT FROM kpi_point_summary WHERE `key` = 'Teamwork' AND TYPE ='MATRIX_PAIRS') AS Teamwork
+                , (SELECT POINT FROM kpi_point_summary WHERE `key` = 'Pencapaian' AND TYPE ='MATRIX_PAIRS') AS Pencapaian
+                , (SELECT POINT FROM kpi_point_summary WHERE `key` = 'Loyalitas' AND TYPE ='MATRIX_PAIRS') AS Loyalitas
+                , (SELECT POINT FROM kpi_point_summary WHERE `key` = 'Efisiensi' AND TYPE ='MATRIX_PAIRS') AS Efisiensi
+            FROM DUAL";
+
+        $user = DB::select(str_replace("\n", "", $sql), []);
+
+        return response()->json($user);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function kpiNormalization()
+    {
+        $sql = "
+            SELECT MST.LABEL
+                , ROUND((
+                    SELECT POINT/(SELECT point FROM kpi_point_summary WHERE `type` = 'MATRIX_PAIRS' AND `key` = MAP.kpi_key_to)
+                    FROM kpi_mapping MAP
+                    WHERE MST.LABEL = MAP.kpi_key_from
+                    AND MAP.kpi_key_to = 'Karakter')
+                    , 3) AS Karakter
+                , ROUND((
+                    SELECT POINT/(SELECT point FROM kpi_point_summary WHERE `type` = 'MATRIX_PAIRS' AND `key` = MAP.kpi_key_to)
+                    FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Absensi')
+                    , 3) AS Absensi
+                , ROUND((
+                    SELECT POINT /(SELECT point FROM kpi_point_summary WHERE `type` = 'MATRIX_PAIRS' AND `key` = MAP.kpi_key_to)
+                    FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Teamwork')
+                    , 3) AS Teamwork
+                , ROUND((
+                    SELECT POINT /(SELECT point FROM kpi_point_summary WHERE `type` = 'MATRIX_PAIRS' AND `key` = MAP.kpi_key_to)
+                    FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Pencapaian')
+                    , 3) AS Pencapaian
+                , ROUND((
+                    SELECT POINT /(SELECT point FROM kpi_point_summary WHERE `type` = 'MATRIX_PAIRS' AND `key` = MAP.kpi_key_to)
+                    FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Loyalitas')
+                    , 3) AS Loyalitas
+                , ROUND((
+                    SELECT POINT /(SELECT point FROM kpi_point_summary WHERE `type` = 'MATRIX_PAIRS' AND `key` = MAP.kpi_key_to)
+                    FROM kpi_mapping MAP WHERE MST.LABEL = MAP.kpi_key_from AND MAP.kpi_key_to = 'Efisiensi')
+                    , 3) AS Efisiensi
+                FROM mst_kpi_index MST";
 
         $user = DB::select(str_replace("\n", "", $sql), []);
 

@@ -58,7 +58,8 @@ class UserService {
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
                 'name' => $this->name,
-                'aktif_yn' => $this->aktif_yn
+                'aktif_yn' => $this->aktif_yn,
+                'role' => 'Karyawan'
             ]
         );
 

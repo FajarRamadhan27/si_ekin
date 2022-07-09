@@ -20,22 +20,15 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Switch from '@mui/material/Switch';
-import { visuallyHidden } from '@mui/utils';
 import { Alert, Button, TextField } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments, getKpiIndex } from '../../../utils/Axios';
+import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments, getKpiIndex, getKpiNormalization } from '../../../utils/Axios';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { DatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import styled from '@emotion/styled';
 import { kpiIndex } from '../../../helpers/constant';
-
-const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
-   '& .MuiOutlinedInput-input': {
-        backgroundColor: 'aqua'
-   }
-}))
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -46,92 +39,7 @@ function descendingComparator(a, b, orderBy) {
   }
   return 0;
 }
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-
-const headCells = [
-  {
-    id: 'tanggal',
-    numeric: false,
-    disablePadding: false,
-    label: 'Tanggal',
-  },
-  {
-    id: 'nama',
-    numeric: false,
-    disablePadding: false,
-    label: 'Nama',
-  },
-  {
-    id: 'karakter',
-    numeric: true,
-    disablePadding: false,
-    label: 'Karakter',
-  },
-  {
-    id: 'absensi',
-    numeric: true,
-    disablePadding: false,
-    label: 'Absensi',
-  },
-  {
-    id: 'teamwork',
-    numeric: true,
-    disablePadding: false,
-    label: 'Teamwork',
-  },
-  {
-    id: 'pencapaian',
-    numeric: true,
-    disablePadding: false,
-    label: 'Pencapaian',
-  },
-  {
-    id: 'loyalitas',
-    numeric: true,
-    disablePadding: false,
-    label: 'Loyalitas',
-  },
-  {
-    id: 'efisiensi',
-    numeric: true,
-    disablePadding: false,
-    label: 'Efisiensi',
-  },
-  {
-    id: 'nilai_akhir',
-    numeric: true,
-    disablePadding: false,
-    label: 'Nilai Akhir',
-  },
-  {
-    id: 'catatan',
-    numeric: false,
-    disablePadding: false,
-    label: 'Catatan',
-  },
-  {
-    id: 'tampilkan_hasil',
-    numeric: false,
-    disablePadding: false,
-    label: 'Tampilkan Hasil',
-  },
-  {
-    id: 'nilai_akhir',
-    numeric: false,
-    disablePadding: false,
-    label: 'Nilai AKhir',
-  },
-];
-
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-    props;
 
   return (
     <TableHead sx={{ bgcolor: '#B2B1B9'}}>
@@ -156,13 +64,6 @@ function EnhancedTableHead(props) {
                 )
             })
         }
-        <TableCell
-            key={"cross"}
-            align={'left'}
-            padding={'normal'}
-        >
-            Nilai Akhir
-        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -240,6 +141,7 @@ export default function AHPTable(props) {
   const [editedRow, setEditedRow] = React.useState(null)
   const [isFiltered, setFilter] = React.useState(false)
   const [value, setValue] = React.useState(moment(new Date()))
+  const [normalization, setNotmalization] = React.useState();
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -258,6 +160,7 @@ export default function AHPTable(props) {
 
     React.useEffect(() => {
         getKpiIndex(setAssessment)
+        getKpiNormalization(setNotmalization)
     }, [])
 
     if (!assessments) {
@@ -285,46 +188,109 @@ export default function AHPTable(props) {
                 period: value.format('YYYYMM')
             }}
         />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-            />
-            <TableBody>
-                {
-                    assessments.map(kpi => {
-                        return (
-                            <>
-                                <TableRow
-                                    hover
-                                    role="checkbox"
-                                    tabIndex={-1}
-                                    key={kpi.LABEL}
-                                >
-                                    <TableCell>{kpi.LABEL}</TableCell>
-                                    <TableCell>{kpi.Karakter}</TableCell>
-                                    <TableCell>{kpi.Absensi}</TableCell>
-                                    <TableCell>{kpi.Teamwork}</TableCell>
-                                    <TableCell>{kpi.Pencapaian}</TableCell>
-                                    <TableCell>{kpi.Loyalitas}</TableCell>
-                                    <TableCell>{kpi.Efisiensi}</TableCell>
-                                    <TableCell>{kpi.nilai_akhir}</TableCell>
-                                </TableRow>
-                            </>
-                        )
-                    })
-                }
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <div className='flex p-4 w-full'>
+            <div className='w-[50%]'>
+                <Typography
+                    sx={{ flex: '1 1 100%', mb: 1 }}
+                    variant="body1"
+                    id="tableTitle"
+                    component="div"
+                >
+                    1. Matrix Perbandingan berpasangan
+                </Typography>
+                <TableContainer>
+                    <Table
+                        aria-labelledby="tableTitle"
+                        size={dense ? 'small' : 'medium'}
+                    >
+                        <EnhancedTableHead
+                        numSelected={selected.length}
+                        order={order}
+                        orderBy={orderBy}
+                        onSelectAllClick={handleSelectAllClick}
+                        onRequestSort={handleRequestSort}
+                        />
+                        <TableBody>
+                            {
+                                assessments.map(kpi => {
+                                    return (
+                                        <>
+                                            <TableRow
+                                                hover
+                                                role="checkbox"
+                                                tabIndex={-1}
+                                                key={kpi.LABEL}
+                                            >
+                                                <TableCell>{kpi.LABEL}</TableCell>
+                                                <TableCell align='right'>{kpi.Karakter}</TableCell>
+                                                <TableCell align='right'>{kpi.Absensi}</TableCell>
+                                                <TableCell align='right'>{kpi.Teamwork}</TableCell>
+                                                <TableCell align='right'>{kpi.Pencapaian}</TableCell>
+                                                <TableCell align='right'>{kpi.Loyalitas}</TableCell>
+                                                <TableCell align='right'>{kpi.Efisiensi}</TableCell>
+                                            </TableRow>
+                                        </>
+                                    )
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+            <div className='ml-4 w-[50%]'>
+               {
+                   normalization &&
+                   <>
+                        <Typography
+                            sx={{ flex: '1 1 100%', mb: 1 }}
+                            variant="body1"
+                            id="tableTitle"
+                            component="div"
+                        >
+                            2. Matrix Nilai Kriteria (Normalisasi)
+                        </Typography>
+                        <TableContainer sx={{ ml: 4}}>
+                            <Table
+                                aria-labelledby="tableTitle"
+                                size={dense ? 'small' : 'medium'}
+                            >
+                                <EnhancedTableHead
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onSelectAllClick={handleSelectAllClick}
+                                onRequestSort={handleRequestSort}
+                                />
+                                <TableBody>
+                                    {
+                                        normalization.map(kpi => {
+                                            return (
+                                                <>
+                                                    <TableRow
+                                                        hover
+                                                        role="checkbox"
+                                                        tabIndex={-1}
+                                                        key={kpi.LABEL}
+                                                    >
+                                                        <TableCell>{kpi.LABEL}</TableCell>
+                                                        <TableCell align='right'>{kpi.Karakter}</TableCell>
+                                                        <TableCell align='right'>{kpi.Absensi}</TableCell>
+                                                        <TableCell align='right'>{kpi.Teamwork}</TableCell>
+                                                        <TableCell align='right'>{kpi.Pencapaian}</TableCell>
+                                                        <TableCell align='right'>{kpi.Loyalitas}</TableCell>
+                                                        <TableCell align='right'>{kpi.Efisiensi}</TableCell>
+                                                    </TableRow>
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                   </>
+               }
+            </div>
+        </div>
       </Paper>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
