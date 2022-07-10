@@ -48,6 +48,26 @@ export function getKpiNormalization(callback) {
         }).catch(e => console.log(e))
 }
 
+export function getKpiRowSummary(callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/assessments/kpi/getKpiRowSummary`)
+        .then( response => {
+            if (response.status === 200) {
+                    callback(response.data)
+            }
+        }).catch(e => console.log(e))
+}
+
+export function getkpiCosistencyRatio(callback) {
+    SetAuthorizationToken(localStorage.getItem('jwtToken'))
+    Axios.get(`${BASE_URL}api/assessments/kpi/getkpiCosistencyRatio`)
+        .then( response => {
+            if (response.status === 200) {
+                    callback(response.data)
+            }
+        }).catch(e => console.log(e))
+}
+
 export function getAssessments(callback, period) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.get(`${BASE_URL}api/assessments/${period}`)

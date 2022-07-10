@@ -15,6 +15,7 @@ class CreateKpiMappingTable extends Migration
     {
         Schema::create('kpi_mapping', function (Blueprint $table) {
             $table->id();
+            $table->string('type');
             $table->string('kpi_key_from');
             $table->string('kpi_key_to');
             $table->double('point');

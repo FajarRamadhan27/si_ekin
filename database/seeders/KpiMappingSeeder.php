@@ -19,31 +19,37 @@ class KpiMappingSeeder extends Seeder
             // Karakter KPI
             [
                 'kpi_key_from' => 'Karakter',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Karakter',
                 'point' => 1
             ],
             [
                 'kpi_key_from' => 'Karakter',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Absensi',
                 'point' => 5
             ],
             [
                 'kpi_key_from' => 'Karakter',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Teamwork',
                 'point' => 3.333
             ],
             [
                 'kpi_key_from' => 'Karakter',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Pencapaian',
                 'point' => 10
             ],
             [
                 'kpi_key_from' => 'Karakter',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Loyalitas',
                 'point' => 10
             ],
             [
                 'kpi_key_from' => 'Karakter',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Efisiensi',
                 'point' => 0.333
             ],
@@ -51,31 +57,37 @@ class KpiMappingSeeder extends Seeder
             // Absensi KPI
             [
                 'kpi_key_from' => 'Absensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Karakter',
                 'point' => 0.2
             ],
             [
                 'kpi_key_from' => 'Absensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Absensi',
                 'point' => 1
             ],
             [
                 'kpi_key_from' => 'Absensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Teamwork',
                 'point' => 1.5
             ],
             [
                 'kpi_key_from' => 'Absensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Pencapaian',
                 'point' => 2
             ],
             [
                 'kpi_key_from' => 'Absensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Loyalitas',
                 'point' => 2
             ],
             [
                 'kpi_key_from' => 'Absensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Efisiensi',
                 'point' => 1.5
             ],
@@ -83,31 +95,37 @@ class KpiMappingSeeder extends Seeder
             // Teamwork KPI
             [
                 'kpi_key_from' => 'Teamwork',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Karakter',
                 'point' => 0.3
             ],
             [
                 'kpi_key_from' => 'Teamwork',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Absensi',
                 'point' => 0.666
             ],
             [
                 'kpi_key_from' => 'Teamwork',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Teamwork',
                 'point' => 1
             ],
             [
                 'kpi_key_from' => 'Teamwork',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Pencapaian',
                 'point' => 3
             ],
             [
                 'kpi_key_from' => 'Teamwork',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Loyalitas',
                 'point' => 3
             ],
             [
                 'kpi_key_from' => 'Teamwork',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Efisiensi',
                 'point' => 1
             ],
@@ -115,31 +133,37 @@ class KpiMappingSeeder extends Seeder
             // Pencapaian KPI
             [
                 'kpi_key_from' => 'Pencapaian',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Karakter',
                 'point' => 0.1
             ],
             [
                 'kpi_key_from' => 'Pencapaian',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Absensi',
                 'point' => 2
             ],
             [
                 'kpi_key_from' => 'Pencapaian',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Teamwork',
                 'point' => 3
             ],
             [
                 'kpi_key_from' => 'Pencapaian',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Pencapaian',
                 'point' => 1
             ],
             [
                 'kpi_key_from' => 'Pencapaian',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Loyalitas',
                 'point' => 1
             ],
             [
                 'kpi_key_from' => 'Pencapaian',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Efisiensi',
                 'point' => 3
             ],
@@ -147,31 +171,37 @@ class KpiMappingSeeder extends Seeder
             // Loyalitas KPI
             [
                 'kpi_key_from' => 'Loyalitas',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Karakter',
                 'point' => 0.1
             ],
             [
                 'kpi_key_from' => 'Loyalitas',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Absensi',
                 'point' => 2
             ],
             [
                 'kpi_key_from' => 'Loyalitas',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Teamwork',
                 'point' => 3
             ],
             [
                 'kpi_key_from' => 'Loyalitas',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Pencapaian',
                 'point' => 1
             ],
             [
                 'kpi_key_from' => 'Loyalitas',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Loyalitas',
                 'point' => 1
             ],
             [
                 'kpi_key_from' => 'Loyalitas',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Efisiensi',
                 'point' => 3
             ],
@@ -179,31 +209,37 @@ class KpiMappingSeeder extends Seeder
             // Loyalitas KPI
             [
                 'kpi_key_from' => 'Efisiensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Karakter',
                 'point' => 0.3
             ],
             [
                 'kpi_key_from' => 'Efisiensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Absensi',
                 'point' => 0.666
             ],
             [
                 'kpi_key_from' => 'Efisiensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Teamwork',
                 'point' => 1
             ],
             [
                 'kpi_key_from' => 'Efisiensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Pencapaian',
                 'point' => 3
             ],
             [
                 'kpi_key_from' => 'Efisiensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Loyalitas',
                 'point' => 3
             ],
             [
                 'kpi_key_from' => 'Efisiensi',
+                'type' => 'MATRIX_PAIRS',
                 'kpi_key_to' => 'Efisiensi',
                 'point' => 1
             ],

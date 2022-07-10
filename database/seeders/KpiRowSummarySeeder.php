@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class KpiNormalizationSeeder extends Seeder
+class KpiRowSummarySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,15 +16,16 @@ class KpiNormalizationSeeder extends Seeder
     {
         $strSql = "
             INSERT INTO kpi_mapping (type, kpi_key_from, kpi_key_to, point)
-            select 'MATRIX_NORMALIZATION' type
+            select 'MATRIX_ROW_SUMMARY' type
                 , map.kpi_key_from
                 , map.kpi_key_to
-                , round(map.point/tot.point, 3) point
+                , round(map.point*(tot.point/6), 3) point
             from kpi_mapping map
                 , kpi_point_summary tot
-            where map.type = 'matrix_pairs'
+            where map.type = 'MATRIX_PAIRS'
             and map.kpi_key_to = tot.key
-            and map.type = tot.type";
+            AND tot.type = 'MATRIX_NORMALIZATION'
+        ";
 
         DB::insert(str_replace("\n", "", $strSql), []);
 
@@ -36,7 +37,7 @@ class KpiNormalizationSeeder extends Seeder
             FROM mst_kpi_index mst
                 , kpi_mapping map
             WHERE mst.label = map.kpi_key_from
-                AND map.type = 'MATRIX_NORMALIZATION'
+                AND map.type = 'MATRIX_ROW_SUMMARY'
             GROUP BY mst.label";
 
         DB::insert(str_replace("\n", "", $strSql), []);

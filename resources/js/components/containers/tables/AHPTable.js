@@ -9,10 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
-import CheckIcon from '@mui/icons-material/Check';
 import TableContainer from '@mui/material/TableContainer';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import TablePagination from '@mui/material/TablePagination';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -20,14 +17,12 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Switch from '@mui/material/Switch';
-import { Alert, Button, TextField } from '@mui/material';
+import { Alert } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments, getKpiIndex, getKpiNormalization } from '../../../utils/Axios';
+import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments, getkpiCosistencyRatio, getKpiIndex, getKpiNormalization, getKpiRowSummary } from '../../../utils/Axios';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { DatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
-import styled from '@emotion/styled';
 import { kpiIndex } from '../../../helpers/constant';
 
 function descendingComparator(a, b, orderBy) {
@@ -41,6 +36,8 @@ function descendingComparator(a, b, orderBy) {
 }
 function EnhancedTableHead(props) {
 
+  const { type } = props
+
   return (
     <TableHead sx={{ bgcolor: '#B2B1B9'}}>
       <TableRow>
@@ -52,6 +49,7 @@ function EnhancedTableHead(props) {
             {" "}
         </TableCell>
         {
+            ['default', 'normalization', 'row_summary'].includes(type) &&
             kpiIndex.map(kpi => {
                 return (
                     <TableCell
@@ -63,6 +61,54 @@ function EnhancedTableHead(props) {
                     </TableCell>
                 )
             })
+        }
+        {
+            ['normalization', 'row_summary'].includes(type) &&
+            <>
+                <TableCell
+                    key={'jumlah'}
+                    align={'left'}
+                    padding={'normal'}
+                >
+                    Jumlah
+                </TableCell>
+            </>
+        }
+        {
+            ['consistency_ratio'].includes(type) &&
+            <>
+                <TableCell
+                    key={'prioritas'}
+                    align={'left'}
+                    padding={'normal'}
+                >
+                    Jumlah /Pairs
+                </TableCell>
+            </>
+        }
+        {
+            ['normalization', 'consistency_ratio'].includes(type) &&
+            <>
+                <TableCell
+                    key={'prioritas'}
+                    align={'left'}
+                    padding={'normal'}
+                >
+                    Prioritas
+                </TableCell>
+            </>
+        }
+        {
+            ['consistency_ratio'].includes(type) &&
+            <>
+                <TableCell
+                    key={'prioritas'}
+                    align={'left'}
+                    padding={'normal'}
+                >
+                    Hasil
+                </TableCell>
+            </>
         }
       </TableRow>
     </TableHead>
@@ -141,7 +187,9 @@ export default function AHPTable(props) {
   const [editedRow, setEditedRow] = React.useState(null)
   const [isFiltered, setFilter] = React.useState(false)
   const [value, setValue] = React.useState(moment(new Date()))
-  const [normalization, setNotmalization] = React.useState();
+  const [normalization, setNotmalization] = React.useState()
+  const [rowSummary, setRowSummary] = React.useState()
+  const [consistencyRatio, setConsistencyRatio] = React.useState()
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -161,9 +209,11 @@ export default function AHPTable(props) {
     React.useEffect(() => {
         getKpiIndex(setAssessment)
         getKpiNormalization(setNotmalization)
+        getKpiRowSummary(setRowSummary)
+        getkpiCosistencyRatio(setConsistencyRatio)
     }, [])
 
-    if (!assessments) {
+    if (!assessments || !normalization || !rowSummary || !consistencyRatio) {
         return <Loading uiAttr={{ open: assessments === null }}/>
     }
 
@@ -189,7 +239,7 @@ export default function AHPTable(props) {
             }}
         />
         <div className='flex p-4 w-full'>
-            <div className='w-[50%]'>
+            <div className='w-[45%]'>
                 <Typography
                     sx={{ flex: '1 1 100%', mb: 1 }}
                     variant="body1"
@@ -204,11 +254,12 @@ export default function AHPTable(props) {
                         size={dense ? 'small' : 'medium'}
                     >
                         <EnhancedTableHead
-                        numSelected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            type={'default'}
                         />
                         <TableBody>
                             {
@@ -237,7 +288,7 @@ export default function AHPTable(props) {
                     </Table>
                 </TableContainer>
             </div>
-            <div className='ml-4 w-[50%]'>
+            <div className='ml-4 w-[45%]'>
                {
                    normalization &&
                    <>
@@ -255,11 +306,12 @@ export default function AHPTable(props) {
                                 size={dense ? 'small' : 'medium'}
                             >
                                 <EnhancedTableHead
-                                numSelected={selected.length}
-                                order={order}
-                                orderBy={orderBy}
-                                onSelectAllClick={handleSelectAllClick}
-                                onRequestSort={handleRequestSort}
+                                    numSelected={selected.length}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onSelectAllClick={handleSelectAllClick}
+                                    onRequestSort={handleRequestSort}
+                                    type={'normalization'}
                                 />
                                 <TableBody>
                                     {
@@ -279,6 +331,111 @@ export default function AHPTable(props) {
                                                         <TableCell align='right'>{kpi.Pencapaian}</TableCell>
                                                         <TableCell align='right'>{kpi.Loyalitas}</TableCell>
                                                         <TableCell align='right'>{kpi.Efisiensi}</TableCell>
+                                                        <TableCell align='right'>{kpi.Jumlah}</TableCell>
+                                                        <TableCell align='right'>{kpi.Prioritas}</TableCell>
+                                                    </TableRow>
+                                                </>
+                                            )
+                                        })
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                   </>
+               }
+            </div>
+        </div>
+        <div className='flex p-4 w-full'>
+            <div className='w-[45%]'>
+                <Typography
+                    sx={{ flex: '1 1 100%', mb: 1 }}
+                    variant="body1"
+                    id="tableTitle"
+                    component="div"
+                >
+                    3. Matrix Penjumlahan setiap baris
+                </Typography>
+                <TableContainer>
+                    <Table
+                        aria-labelledby="tableTitle"
+                        size={dense ? 'small' : 'medium'}
+                    >
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            type={'row_summary'}
+                        />
+                        <TableBody>
+                            {
+                                rowSummary.map(kpi => {
+                                    return (
+                                        <>
+                                            <TableRow
+                                                hover
+                                                role="checkbox"
+                                                tabIndex={-1}
+                                                key={kpi.LABEL}
+                                            >
+                                                <TableCell>{kpi.LABEL}</TableCell>
+                                                <TableCell align='right'>{kpi.Karakter}</TableCell>
+                                                <TableCell align='right'>{kpi.Absensi}</TableCell>
+                                                <TableCell align='right'>{kpi.Teamwork}</TableCell>
+                                                <TableCell align='right'>{kpi.Pencapaian}</TableCell>
+                                                <TableCell align='right'>{kpi.Loyalitas}</TableCell>
+                                                <TableCell align='right'>{kpi.Efisiensi}</TableCell>
+                                                <TableCell align='right'>{kpi.Jumlah}</TableCell>
+                                            </TableRow>
+                                        </>
+                                    )
+                                })
+                            }
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+            <div className='ml-4 w-[45%]'>
+               {
+                   normalization &&
+                   <>
+                        <Typography
+                            sx={{ flex: '1 1 100%', mb: 1 }}
+                            variant="body1"
+                            id="tableTitle"
+                            component="div"
+                        >
+                            4. Perhitungan Rasio Konsistensi
+                        </Typography>
+                        <TableContainer sx={{ ml: 4}}>
+                            <Table
+                                aria-labelledby="tableTitle"
+                                size={dense ? 'small' : 'medium'}
+                            >
+                                <EnhancedTableHead
+                                    numSelected={selected.length}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onSelectAllClick={handleSelectAllClick}
+                                    onRequestSort={handleRequestSort}
+                                    type={'consistency_ratio'}
+                                />
+                                <TableBody>
+                                    {
+                                        consistencyRatio.map(kpi => {
+                                            return (
+                                                <>
+                                                    <TableRow
+                                                        hover
+                                                        role="checkbox"
+                                                        tabIndex={-1}
+                                                        key={kpi.LABEL}
+                                                    >
+                                                        <TableCell>{kpi.LABEL}</TableCell>
+                                                        <TableCell align='right'>{kpi.Jumlah}</TableCell>
+                                                        <TableCell align='right'>{kpi.Prioritas}</TableCell>
+                                                        <TableCell align='right'>{kpi.Hasil}</TableCell>
                                                     </TableRow>
                                                 </>
                                             )

@@ -39,6 +39,8 @@ Route::middleware('sanctum')->group(function () {
     Route::get('assessments/getUserAssessmentByPeriod/{userId}/{period}', [AssesmentController::class, 'getUserAssessmentByPeriod']);
     Route::get('assessments/kpi/getKpiIndex', [AssesmentController::class, 'kpiIndex']);
     Route::get('assessments/kpi/getKpiNormalization', [AssesmentController::class, 'kpiNormalization']);
+    Route::get('assessments/kpi/getKpiRowSummary', [AssesmentController::class, 'kpiRowSummary']);
+    Route::get('assessments/kpi/getkpiCosistencyRatio', [AssesmentController::class, 'kpiCosistencyRatio']);
     Route::get('assessments/rank/{period}', [AssesmentController::class, 'getRank']);
     Route::get('assessments/approval/{period}', [AssesmentController::class, 'assessmentsApproval']);
     Route::put('assessments', [AssesmentController::class, 'edit']);

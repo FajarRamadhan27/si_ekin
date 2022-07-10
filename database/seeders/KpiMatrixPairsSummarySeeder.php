@@ -16,12 +16,13 @@ class KpiMatrixPairsSummarySeeder extends Seeder
     {
         $strSql = "
             INSERT INTO kpi_point_summary (`type`, `key`, point)
-            SELECT 'MATRIX_PAIRS' TYPE
+            SELECT map.type
                 , mst.label
                 , SUM(map.point)
             FROM mst_kpi_index mst
                 , kpi_mapping map
             WHERE mst.label = map.kpi_key_to
+                AND map.type = 'MATRIX_PAIRS'
             GROUP BY mst.label
         ";
 
