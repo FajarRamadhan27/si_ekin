@@ -68,11 +68,10 @@ export function getkpiCosistencyRatio(callback) {
         }).catch(e => console.log(e))
 }
 
-export function getAssessments(callback, period) {
+export function getAssessments(callback, period, userId) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
-    Axios.get(`${BASE_URL}api/assessments/${period}`)
+    Axios.get(`${BASE_URL}api/assessments/${period}`, { params: { id: userId }})
         .then( response => {
-            console.log(response);
             if (response.status === 200) {
                 callback({ original: response.data, forFilter: response.data})
             }
@@ -83,7 +82,6 @@ export function getApproval(callback, period) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.get(`${BASE_URL}api/assessments/approval/${period}`)
         .then( response => {
-            console.log(response);
             if (response.status === 200) {
                 callback({ original: response.data, forFilter: response.data})
             }

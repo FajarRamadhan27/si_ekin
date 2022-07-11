@@ -13,7 +13,7 @@ class AssesmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($period)
+    public function index($period, Request $request)
     {
         $user = DB::table('users')
             ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
@@ -34,6 +34,7 @@ class AssesmentController extends Controller
             )
             ->where('penilaian.tanggal', '=', $period)
             ->where('penilaian.approve_yn', '!=', 'Y' )
+            ->where('users.id', 'like', "%$request->id%")
             ->orderBy('users.name')
             ->get();
 

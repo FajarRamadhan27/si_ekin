@@ -22,14 +22,14 @@ import Tooltip from '@mui/material/Tooltip';
 import Switch from '@mui/material/Switch';
 import { visuallyHidden } from '@mui/utils';
 import { Alert, Button, TextField } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments } from '../../../utils/Axios';
+import { assessmentShowYn, bulkShowAssessments, getAssessments } from '../../../utils/Axios';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { DatePicker } from '@mui/x-date-pickers';
 import moment from 'moment';
 import styled from '@emotion/styled';
+import { useSelector } from 'react-redux';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
@@ -141,41 +141,53 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
+  const { user } = useSelector(state => state)
+
   return (
     <TableHead sx={{ bgcolor: '#B2B1B9'}}>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
+          {
+              user.value.role != 'Karyawan' &&
+              <TableCell padding="checkbox">
+                <Checkbox
+                    color="primary"
+                    indeterminate={numSelected > 0 && numSelected < rowCount}
+                    checked={rowCount > 0 && numSelected === rowCount}
+                    onChange={onSelectAllClick}
+                    inputProps={{
+                    'aria-label': 'select all desserts',
+                    }}
+                />
+            </TableCell>
+          }
+        {headCells.map((headCell) => {
+
+            if (headCell.id == 'tampilkan_hasil' && user.value.role == 'Karyawan') {
+                return;
+            }
+
+          return (
+            <TableCell
+                key={headCell.id}
+                align={'center'}
+                padding={headCell.disablePadding ? 'none' : 'normal'}
+                sortDirection={orderBy === headCell.id ? order : false}
             >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
+                <TableSortLabel
+                    active={orderBy === headCell.id}
+                    direction={orderBy === headCell.id ? order : 'asc'}
+                    onClick={createSortHandler(headCell.id)}
+                >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                    <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                    </Box>
+                ) : null}
+                </TableSortLabel>
+            </TableCell>
+          )
+        })}
       </TableRow>
     </TableHead>
   );
@@ -268,6 +280,8 @@ export default function AssessmentTable(props) {
   const [isFiltered, setFilter] = React.useState(false)
   const [value, setValue] = React.useState(moment(new Date()))
 
+  const { user } = useSelector(state => state)
+
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -283,8 +297,10 @@ export default function AssessmentTable(props) {
         setSelected([]);
     };
 
+    let userId = user.value.role == "Karyawan" ? user.value.id : ""
+
     React.useEffect(() => {
-        getAssessments(setAssessment,value.format('YYYYMM'))
+        getAssessments(setAssessment,value.format('YYYYMM'), userId)
     }, [])
 
     if (!assessments) {
@@ -403,43 +419,50 @@ export default function AssessmentTable(props) {
                       key={row.id}
                       selected={isItemSelected}
                     >
-                      <TableCell onClick={(event) => handleClick(event, row.id)} padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
+                      {
+                          user.value.role != 'Karyawan' &&
+                            <TableCell onClick={(event) => handleClick(event, row.id)} padding="checkbox">
+                                <Checkbox
+                                    color="primary"
+                                    checked={isItemSelected}
+                                    inputProps={{
+                                    'aria-labelledby': labelId,
+                                    }}
+                                />
+                            </TableCell>
+                      }
                       <TableCell
                         component="th"
                         id={labelId}
                         scope="row"
-                        padding="none"
+                        padding={ user.value.role == 'Karyawan' ? "checkbox" : "none"}
+                        align="center"
                       >
                         {row.tanggal}
                       </TableCell>
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.name}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.karakter}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.absensi}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.teamwork}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.pencapaian}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.loyalitas}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.efisiensi}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
-                      <TableCell>
-                        <>
-                            <Button
-                            id='btn-showYn'
-                            onClick={(event) => handleButtonShowYn(event, row)}
-                            >
-                            <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 'Y' ? 'green' : 'gray' }}/>
-                            </Button>
-                            { row.tampilkan_hasil === 'Y' ? 'YA' : 'TIDAK' }
-                        </>
-                      </TableCell>
+                      <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.karakter}</TableCell>
+                      <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.absensi}</TableCell>
+                      <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.teamwork}</TableCell>
+                      <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.pencapaian}</TableCell>
+                      <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.loyalitas}</TableCell>
+                      <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.efisiensi}</TableCell>
+                      <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
+                      <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
+                      {
+                          user.value.role != 'Karyawan' &&
+                          <TableCell>
+                            <>
+                                <Button
+                                id='btn-showYn'
+                                onClick={(event) => handleButtonShowYn(event, row)}
+                                >
+                                <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 'Y' ? 'green' : 'gray' }}/>
+                                </Button>
+                                { row.tampilkan_hasil === 'Y' ? 'YA' : 'TIDAK' }
+                            </>
+                        </TableCell>
+                      }
                     </TableRow>
                   );
                 })}
