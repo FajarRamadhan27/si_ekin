@@ -384,7 +384,7 @@ export default function AssessmentTable(props) {
                 value={value}
                 onChange={(newValue) => {
                     setValue(newValue)
-                    getAssessments(setAssessment, newValue.format('YYYYMM'))
+                    getAssessments(setAssessment, newValue.format('YYYYMM'), userId)
                 }}
                 renderInput={(params) => <TextField {...params} helperText={null} />}
             />
