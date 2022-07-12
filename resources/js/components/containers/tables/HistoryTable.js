@@ -144,17 +144,6 @@ function EnhancedTableHead(props) {
   return (
     <TableHead sx={{ bgcolor: '#B2B1B9'}}>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -220,7 +209,7 @@ const EnhancedTableToolbar = (props) => {
                     alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
                 }),
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: 'left',
                 justifyItems: 'center'
             }}
         >
@@ -234,20 +223,6 @@ const EnhancedTableToolbar = (props) => {
                 </Typography>
             ) : (
                 <Search sx={{ background: '#DCDCDC' }} data={{ data: assessments, setData: setAssessment, setFilter }}/>
-            )}
-
-            {numSelected > 0 ? (
-                <Tooltip onClick={handleDelete} title="Delete">
-                <IconButton>
-                    <DeleteIcon />
-                </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Input Karyawan">
-                <IconButton onClick={() => setInputModal(true)}>
-                    <DriveFileRenameOutlineIcon/>
-                </IconButton>
-                </Tooltip>
             )}
         </Toolbar>
     </>
@@ -395,33 +370,25 @@ export default function HistoryTable(props) {
                       key={row.id}
                       selected={isItemSelected}
                     >
-                      <TableCell onClick={(event) => handleClick(event, row.id)} padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
                       <TableCell
                         component="th"
                         id={labelId}
                         scope="row"
-                        padding="none"
+                        align='center'
+                        padding="checkbox"
                       >
                         {row.tanggal}
                       </TableCell>
                       <TableCell onClick={(event) => handleClick(event, row.id)} >{row.name}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.karakter}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.absensi}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.teamwork}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.pencapaian}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.loyalitas}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.efisiensi}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.rank}</TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.absensi}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.teamwork}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.pencapaian}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.karakter}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.loyalitas}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.efisiensi}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.rank}</TableCell>
+                      <TableCell align='center' onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
                     </TableRow>
                   );
                 })}

@@ -67,7 +67,7 @@ function NavBar(props) {
               color="inherit"
               noWrap
             >
-                { user.name }
+                { `${user.name} (${user.role})` }
             </Typography>
           </Toolbar>
         </AppBar>

@@ -78,9 +78,9 @@ export function getAssessments(callback, period, userId) {
         }).catch(e => console.log(e))
 }
 
-export function getApproval(callback, period) {
+export function getApproval(callback, period, userId) {
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
-    Axios.get(`${BASE_URL}api/assessments/approval/${period}`)
+    Axios.get(`${BASE_URL}api/assessments/approval/${period}`, { params: { id: userId }})
         .then( response => {
             if (response.status === 200) {
                 callback({ original: response.data, forFilter: response.data})

@@ -25,11 +25,11 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import TablePagination from '@mui/material/TablePagination';
 import { visuallyHidden } from '@mui/utils';
 import { DatePicker } from '@mui/x-date-pickers';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { Alert, Button, TextField } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
 import { approveYn, bulkApproveAssessments, getApproval} from '../../../utils/Axios';
+import { useSelector } from 'react-redux';
 
 const DatePickerCustom = styled(DatePicker)(({ theme }) =>({
    '& .MuiOutlinedInput-input': {
@@ -141,24 +141,35 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
 
+  const { user } = useSelector(state => state)
+
   return (
     <TableHead sx={{ bgcolor: '#B2B1B9'}}>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
+        {
+            user.value.role == 'Owner' &&
+            <TableCell padding="checkbox">
+                <Checkbox
+                    color="primary"
+                    indeterminate={numSelected > 0 && numSelected < rowCount}
+                    checked={rowCount > 0 && numSelected === rowCount}
+                    onChange={onSelectAllClick}
+                    inputProps={{
+                    'aria-label': 'select all desserts',
+                    }}
+                />
+            </TableCell>
+        }
+        {headCells.map((headCell) => {
+
+            if (headCell.id == 'approve_yn' && user.value.role != 'Owner') {
+                return;
+            }
+
+          return (
+            <TableCell
             key={headCell.id}
-            align={'left'}
+            align={'center'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -175,7 +186,8 @@ function EnhancedTableHead(props) {
               ) : null}
             </TableSortLabel>
           </TableCell>
-        ))}
+          )
+        })}
       </TableRow>
     </TableHead>
   );
@@ -268,6 +280,8 @@ export default function ApprovalTable(props) {
   const [isFiltered, setFilter] = React.useState(false)
   const [value, setValue] = React.useState(moment(new Date()))
 
+  const { user } = useSelector(state => state)
+
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -283,8 +297,10 @@ export default function ApprovalTable(props) {
         setSelected([]);
     };
 
+    let userId = user.value.role == "Karyawan" ? user.value.id : ""
+
     React.useEffect(() => {
-        getApproval(setAssessment,value.format('YYYYMM'))
+        getApproval(setAssessment,value.format('YYYYMM'), userId)
     }, [])
 
     if (!assessments) {
@@ -368,7 +384,7 @@ export default function ApprovalTable(props) {
                 value={value}
                 onChange={(newValue) => {
                     setValue(newValue)
-                    getApproval(setAssessment, newValue.format('YYYYMM'))
+                    getApproval(setAssessment, newValue.format('YYYYMM'), userId)
                 }}
                 renderInput={(params) => <TextField {...params} helperText={null} />}
             />
@@ -404,43 +420,48 @@ export default function ApprovalTable(props) {
                       selected={isItemSelected}
                       onClick={(event) => handleClick(event, row.id)}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
+                      {
+                          user.value.role == 'Owner' &&
+                            <TableCell onClick={(event) => handleClick(event, row.id)} padding="checkbox">
+                                <Checkbox
+                                    color="primary"
+                                    checked={isItemSelected}
+                                    inputProps={{
+                                    'aria-labelledby': labelId,
+                                    }}
+                                />
+                            </TableCell>
+                      }
                       <TableCell
                         component="th"
                         id={labelId}
                         scope="row"
-                        padding="none"
+                        align='center'
+                        padding={user.value.role == "Owner" ? "none" : "checkbox"}
                       >
                         {row.tanggal}
                       </TableCell>
                       <TableCell >{row.name}</TableCell>
-                      <TableCell >{row.karakter}</TableCell>
-                      <TableCell >{row.absensi}</TableCell>
-                      <TableCell >{row.teamwork}</TableCell>
-                      <TableCell >{row.pencapaian}</TableCell>
-                      <TableCell >{row.loyalitas}</TableCell>
-                      <TableCell >{row.efisiensi}</TableCell>
-                      <TableCell >{row.nilai_akhir}</TableCell>
-                      <TableCell >{row.catatan}</TableCell>
-                      <TableCell>
-                        <>
-                            <Button
-                            id='btn-showYn'
-                            onClick={(event) => handleButtonApproveYn(event, row)}
-                            >
-                            <CheckIcon fontSize='small' sx={{ color: row.approve_yn === 'Y' ? 'green' : 'gray' }}/>
-                            </Button>
-                            { row.approve_yn === 'Y' ? 'YA' : 'TIDAK' }
-                        </>
-                      </TableCell>
+                      <TableCell align='center'>{row.karakter}</TableCell>
+                      <TableCell align='center'>{row.absensi}</TableCell>
+                      <TableCell align='center'>{row.teamwork}</TableCell>
+                      <TableCell align='center'>{row.pencapaian}</TableCell>
+                      <TableCell align='center'>{row.loyalitas}</TableCell>
+                      <TableCell align='center'>{row.efisiensi}</TableCell>
+                      <TableCell align='center'>{row.nilai_akhir}</TableCell>
+                      <TableCell align='center'>{row.catatan}</TableCell>
+                      {
+                          user.value.role == 'Owner' &&
+                            <TableCell>
+                                <Button
+                                id='btn-showYn'
+                                onClick={(event) => handleButtonApproveYn(event, row)}
+                                >
+                                <CheckIcon fontSize='small' sx={{ color: row.approve_yn === 'Y' ? 'green' : 'gray' }}/>
+                                </Button>
+                                { row.approve_yn === 'Y' ? 'YA' : 'TIDAK' }
+                            </TableCell>
+                      }
                     </TableRow>
                   );
                 })}

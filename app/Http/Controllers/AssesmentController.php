@@ -254,7 +254,7 @@ class AssesmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function assessmentsApproval($period)
+    public function assessmentsApproval($period, Request $request)
     {
         $user = DB::table('users')
             ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
@@ -275,6 +275,7 @@ class AssesmentController extends Controller
             )
             ->where('penilaian.tanggal', '=', $period)
             ->where('penilaian.tampilkan_hasil', '=', 'Y')
+            ->where('users.id', 'like', "%$request->id%")
             ->orderBy('users.name')
             ->get();
 
