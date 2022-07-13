@@ -134,4 +134,31 @@ class UserController extends Controller
             'messages' => 'Status user berhasil diperbaharui.'
         ];
     }
+
+    /**
+     * Get total employee
+     *
+     * @param  Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTotalEmployee()
+    {
+        $user = DB::select('SELECT COUNT(*) AS TOTAL_EMPLOYEE FROM USERS WHERE AKTIF_YN = ?', ['Y']);
+
+        return response()->json($user);
+    }
+
+    /**
+     * Find Users
+     *
+     * @param  Request $request
+     * @param  string $key
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function findUser($key)
+    {
+        $user = DB::select("SELECT ID, NAME, JABATAN FROM USERS WHERE ID NOT IN (1) AND NAME LIKE ?", ['%'.$key.'%']);
+
+        return response()->json($user);
+    }
 }

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
@@ -16,6 +16,7 @@ import GetAppTwoToneIcon from '@mui/icons-material/GetAppOutlined';
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
 import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
+import { getTotalEmployee } from '../../utils/Axios';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.dark,
@@ -56,7 +57,8 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const TotalEmployeeCard = ({ isLoading }) => {
     const theme = useTheme();
 
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null)
+    const [totalEmployee, setTotalEmployee] = useState(null)
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -66,6 +68,9 @@ const TotalEmployeeCard = ({ isLoading }) => {
         setAnchorEl(null);
     };
 
+    useEffect(() => {
+        getTotalEmployee(setTotalEmployee)
+    }, [])
     return (
         <>
             {isLoading ? (
@@ -141,7 +146,7 @@ const TotalEmployeeCard = ({ isLoading }) => {
                                 <Grid container alignItems="center">
                                     <Grid item>
                                         <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                            3
+                                            {totalEmployee}
                                         </Typography>
                                     </Grid>
                                     <Grid item>

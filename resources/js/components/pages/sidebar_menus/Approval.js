@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material"
+import ApprovalTable from "../../containers/tables/ApprovalTable"
 
 function Approval() {
     return (
@@ -11,6 +12,7 @@ function Approval() {
             >
                Approval
             </Typography>
+            <ApprovalTable/>
         </>
     )
 }

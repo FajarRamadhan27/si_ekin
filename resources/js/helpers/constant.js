@@ -4,11 +4,13 @@ export const SET_CURRENT_USER = 'SET_CURRENT_USER'
 export const MENU_DASHBOARD             = '/'
 export const MENU_EMPLOYEE_MASTER       = '/data-karyawan'
 export const MENU_ASSESSMENT_INDEX      = '/index-penilaian'
+export const MENU_ASSESSMENT_INPUT      = '/input-penilaiaan'
 export const MENU_MY_ASSESSMENT         = '/penilaian-saya'
 export const MENU_APPROVAL              = '/approval'
 export const MENU_RANKING               = '/rangking'
 export const MENU_MY_SCORE              = '/nilai-saya'
 export const MENU_PROFILE               = '/profile'
+export const MENU_HISTORY               = '/history'
 
 export const positions = [
     {
@@ -37,5 +39,32 @@ export const roles = [
     {
         id      : 'KARYAWAN',
         label   : 'Karyawan'
+    }
+]
+
+export const kpiIndex = [
+    {
+        key: 'karakter',
+        label: 'Karakter'
+    },
+    {
+        key: 'absensi',
+        label: 'Absensi'
+    },
+    {
+        key: 'teamwork',
+        label: 'Teamwork'
+    },
+    {
+        key: 'pencapaian',
+        label: 'Pencapaian'
+    },
+    {
+        key: 'loyalitas',
+        label: 'Loyalitas'
+    },
+    {
+        key: 'efisiensi',
+        label: 'Efisiensi'
     }
 ]

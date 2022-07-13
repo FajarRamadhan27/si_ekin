@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material"
+import AHPTable from "../../containers/tables/AHPTable"
 import AssessmentTable from "../../containers/tables/AssessmentTable"
 
 function AssessmentIndex() {
@@ -12,7 +13,7 @@ function AssessmentIndex() {
             >
                 Index Penilaian
             </Typography>
-            <AssessmentTable/>
+            <AHPTable/>
         </>
     )
 }

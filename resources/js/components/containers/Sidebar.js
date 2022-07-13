@@ -13,7 +13,13 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import { PowerSettingsNew } from '@mui/icons-material';
 import ConfirmLogOutModal from "../modals/ConfirmLogOutModal";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from "../../helpers/constant";
+import InputIcon from '@mui/icons-material/Input';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import HistoryIcon from '@mui/icons-material/History';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import BallotIcon from '@mui/icons-material/Ballot';
+import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_ASSESSMENT_INPUT, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_HISTORY, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from "../../helpers/constant";
+import { useSelector } from 'react-redux';
 
 function SideBar (props) {
 
@@ -21,6 +27,8 @@ function SideBar (props) {
 
     const [ logOutModal, setModalLogOut ] = React.useState(false)
     const { setToken } = props.uiAttr
+
+    const { user } = useSelector(state => state)
 
     const handleSidebarClick = (path) => {
         navigate(path)
@@ -42,30 +50,45 @@ function SideBar (props) {
 
             </React.Fragment>
 
-            <Divider sx={{ my: 1 }} />
+            {
+                user.value.role != 'Karyawan' &&
+                <>
+                    <Divider sx={{ my: 1 }} />
 
-            <React.Fragment>
-                <ListSubheader component="div" inset>Data Master</ListSubheader>
+                    <React.Fragment>
+                        <ListSubheader component="div" inset>Data Master</ListSubheader>
 
-                <ListItemButton
-                    onClick={() => handleSidebarClick(MENU_EMPLOYEE_MASTER)}
-                >
-                    <ListItemIcon>
-                        <BadgeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Data Karyawan" />
-                </ListItemButton>
+                        <ListItemButton
+                            onClick={() => handleSidebarClick(MENU_EMPLOYEE_MASTER)}
+                        >
+                            <ListItemIcon>
+                                <BadgeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Data Karyawan" />
+                        </ListItemButton>
 
-                <ListItemButton
-                    onClick={() => handleSidebarClick(MENU_ASSESSMENT_INDEX)}
-                >
-                    <ListItemIcon>
-                        <AssignmentIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Index Penilaian" />
-                </ListItemButton>
+                        <ListItemButton
+                            onClick={() => handleSidebarClick(MENU_ASSESSMENT_INDEX)}
+                        >
+                            <ListItemIcon>
+                                <AssignmentIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Index Penilaian" />
+                        </ListItemButton>
 
-            </React.Fragment>
+                        <ListItemButton
+                            onClick={() => handleSidebarClick(MENU_ASSESSMENT_INPUT)}
+                        >
+                            <ListItemIcon>
+                                <InputIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Input Penilaian" />
+                        </ListItemButton>
+
+                    </React.Fragment>
+                </>
+            }
+
 
             <Divider sx={{ my: 1 }} />
 
@@ -76,7 +99,7 @@ function SideBar (props) {
                     onClick={() => handleSidebarClick(MENU_MY_ASSESSMENT)}
                 >
                     <ListItemIcon>
-                        <LibraryBooksIcon />
+                        <AssessmentIcon />
                     </ListItemIcon>
                     <ListItemText primary="Penilaian Saya" />
                 </ListItemButton>
@@ -101,7 +124,7 @@ function SideBar (props) {
                     onClick={() => handleSidebarClick(MENU_RANKING)}
                 >
                     <ListItemIcon>
-                        <AssignmentIcon />
+                        <AutoGraphIcon />
                     </ListItemIcon>
                     <ListItemText primary="Rangking" />
                 </ListItemButton>
@@ -110,9 +133,18 @@ function SideBar (props) {
                     onClick={() => handleSidebarClick(MENU_MY_SCORE)}
                 >
                     <ListItemIcon>
-                        <AssignmentIcon />
+                        <BallotIcon />
                     </ListItemIcon>
                     <ListItemText primary="Nilai Saya" />
+                </ListItemButton>
+
+                <ListItemButton
+                    onClick={() => handleSidebarClick(MENU_HISTORY)}
+                >
+                    <ListItemIcon>
+                        <HistoryIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="History" />
                 </ListItemButton>
 
             </React.Fragment>

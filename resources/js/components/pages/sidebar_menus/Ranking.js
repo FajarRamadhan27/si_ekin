@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material"
+import RankTable from "../../containers/tables/RankTable"
 
 function Ranking() {
     return (
@@ -11,6 +12,7 @@ function Ranking() {
             >
                Ranking
             </Typography>
+            <RankTable/>
         </>
     )
 }

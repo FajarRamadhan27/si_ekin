@@ -10,17 +10,18 @@ import ToolBar from '../containers/ToolBar';
 import Ranking from './sidebar_menus/Ranking';
 import MyScore from './sidebar_menus/MyScore';
 import Profile from './sidebar_menus/Profile';
+import History from './sidebar_menus/History';
 import Copyright from '../containers/copyright';
 import Container from '@mui/material/Container';
 import Approval from './sidebar_menus/Approval';
+import { Route, Routes } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import MyAssessment from './Sidebar_menus/MyAssessment';
 import AssessmentIndex from './Sidebar_menus/AssessmentIndex';
 import EmployeeMasterData from './sidebar_menus/EmployeMasterData';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from '../../helpers/constant';
-import { Route, Routes } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { MENU_APPROVAL, MENU_ASSESSMENT_INDEX, MENU_ASSESSMENT_INPUT, MENU_DASHBOARD, MENU_EMPLOYEE_MASTER, MENU_HISTORY, MENU_MY_ASSESSMENT, MENU_MY_SCORE, MENU_PROFILE, MENU_RANKING } from '../../helpers/constant';
+import AssessmentInput from './sidebar_menus/AssessmentInput';
 
 const drawerWidth = 240;
 
@@ -95,11 +96,13 @@ function DashboardContent(props) {
                 <Route path={MENU_DASHBOARD} element={<Home/>}/>
                 <Route path={MENU_EMPLOYEE_MASTER} element={<EmployeeMasterData/>}/>
                 <Route path={MENU_ASSESSMENT_INDEX} element={<AssessmentIndex/>}/>
+                <Route path={MENU_ASSESSMENT_INPUT} element={<AssessmentInput/>}/>
                 <Route path={MENU_MY_ASSESSMENT} element={<MyAssessment/>}/>
                 <Route path={MENU_APPROVAL} element={<Approval/>}/>
                 <Route path={MENU_RANKING} element={<Ranking/>}/>
                 <Route path={MENU_MY_SCORE} element={<MyScore/>}/>
                 <Route path={MENU_PROFILE} element={<Profile/>}/>
+                <Route path={MENU_HISTORY} element={<History/>}/>
             </Routes>
             <Copyright sx={{ pt: 4 }} />
           </Container>
