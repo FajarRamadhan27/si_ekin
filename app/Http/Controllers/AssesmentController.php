@@ -210,13 +210,28 @@ class AssesmentController extends Controller
             SELECT A.LABEL
                 , A.Jumlah
                 , A.Prioritas
-                , ROUND(JUmlah + Prioritas, 3) Hasil
+                , ROUND(Jumlah + Prioritas, 3) Hasil
             FROM
             (
                 SELECT MST.LABEL
                 , (SELECT POINT FROM kpi_point_summary sum WHERE sum.TYPE = 'MATRIX_ROW_SUMMARY' AND sum.KEY = mst.LABEL) Jumlah
                 , ROUND((SELECT POINT FROM kpi_point_summary sum WHERE sum.TYPE = 'MATRIX_NORMALIZATION' AND sum.KEY = mst.LABEL) / 6, 3) Prioritas
                 FROM mst_kpi_index MST
+            ) A
+            UNION ALL
+            SELECT '' LABEL
+                , '' Jumlah
+                , '' Prioritas
+                , ROUND(SUM(A.hasil), 3) Hasil
+            FROM (
+                SELECT ROUND(JUmlah + Prioritas, 3) Hasil
+                FROM
+                (
+                    SELECT MST.LABEL
+                    , (SELECT POINT FROM kpi_point_summary sum WHERE sum.TYPE = 'MATRIX_ROW_SUMMARY' AND sum.KEY = mst.LABEL) Jumlah
+                    , ROUND((SELECT POINT FROM kpi_point_summary sum WHERE sum.TYPE = 'MATRIX_NORMALIZATION' AND sum.KEY = mst.LABEL) / 6, 3) Prioritas
+                    FROM mst_kpi_index MST
+                ) A
             ) A
         ";
 

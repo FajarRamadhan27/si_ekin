@@ -129,14 +129,14 @@ function SideBar (props) {
                     <ListItemText primary="Rangking" />
                 </ListItemButton>
 
-                <ListItemButton
+                {/* <ListItemButton
                     onClick={() => handleSidebarClick(MENU_MY_SCORE)}
                 >
                     <ListItemIcon>
                         <BallotIcon />
                     </ListItemIcon>
                     <ListItemText primary="Nilai Saya" />
-                </ListItemButton>
+                </ListItemButton> */}
 
                 <ListItemButton
                     onClick={() => handleSidebarClick(MENU_HISTORY)}
