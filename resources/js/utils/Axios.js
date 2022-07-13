@@ -111,6 +111,7 @@ export function getEmployeeRank(callback, period) {
 }
 
 export function createEmployee(data, callback, callback2, callback3,callback4) {
+    console.log(data)
     SetAuthorizationToken(localStorage.getItem('jwtToken'))
     Axios.post(`${BASE_URL}api/employee`, { ...data })
         .then( response => {

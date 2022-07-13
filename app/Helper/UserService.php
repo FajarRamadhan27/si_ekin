@@ -11,7 +11,7 @@ use Illuminate\Validation\Rules\Password;
 
 class UserService {
 
-    public $email, $password, $name, $jabatan, $no_telp;
+    public $email, $password, $name, $jabatan, $no_telp, $aktif_yn, $role;
 
     public function __construct($email, $password, $name, $aktif_yn, $role, $jabatan='', $no_telp='')
     {
@@ -90,13 +90,15 @@ class UserService {
                 'email' => $this->email,
                 'name' => $this->name,
                 'jabatan' => $this->jabatan,
-                'no_telp' => $this->no_telp
+                'no_telp' => $this->no_telp,
+                'role' => $this->role,
             ],
             [
                 'email' => ['required', 'email', 'unique:users'],
                 'name' => ['required'],
                 'jabatan' => ['required'],
                 'no_telp' => ['required'],
+                'role' => ['required'],
             ]
         );
 
@@ -110,8 +112,10 @@ class UserService {
                 'email' => $this->email,
                 'password' => Hash::make('12345678'),
                 'name' => $this->name,
+                'aktif_yn' => $this->aktif_yn,
                 'jabatan' => $this->jabatan,
-                'no_telp' => $this->no_telp
+                'no_telp' => $this->no_telp,
+                'role' => $this->role
             ]
         );
 

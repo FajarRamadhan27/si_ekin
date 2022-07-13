@@ -26,7 +26,13 @@ export default function InsertEmployeeModal(props) {
   const dispatch = useDispatch()
   const { selectedRow } = useSelector(state => state.table)
   const [errorMessage, setError] = React.useState();
-  const [newVal, setNewVal] = React.useState(selectedRow)
+  const [newVal, setNewVal] = React.useState(selectedRow ?? {
+      name: " ",
+      jabatan:  " ",
+      role: " ",
+      email: " ",
+      no_telp: " "
+  })
 
   const { inputModal, setInputModal, setEmployee, setFlashMessage, setSelected } = props.uiAttr
 
@@ -63,7 +69,7 @@ export default function InsertEmployeeModal(props) {
             }
         })
     } else {
-        createEmployee({email, name, jabatan, no_telp}, setInputModal, setEmployee, setError, setFlashMessage)
+        createEmployee(newVal, setInputModal, setEmployee, setError, setFlashMessage)
     }
   }
 
