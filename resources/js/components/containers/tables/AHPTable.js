@@ -24,6 +24,7 @@ import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments, 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import moment from 'moment';
 import { kpiIndex } from '../../../helpers/constant';
+import { NineK } from '@mui/icons-material';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -217,6 +218,12 @@ export default function AHPTable(props) {
         return <Loading uiAttr={{ open: assessments === null }}/>
     }
 
+    let jumlah = consistencyRatio[6].Hasil
+    let nKpi = 6
+    let lamdaMax = jumlah / nKpi
+    let ci = (lamdaMax - nKpi) / nKpi - 1
+    let cr = ci / 1.24
+
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
@@ -239,7 +246,7 @@ export default function AHPTable(props) {
             }}
         />
         <div className='flex p-4 w-full'>
-            <div className='w-[45%]'>
+            <div className='w-[50%] border border-gray-500 p-4'>
                 <Typography
                     sx={{ flex: '1 1 100%', mb: 1 }}
                     variant="body1"
@@ -288,7 +295,7 @@ export default function AHPTable(props) {
                     </Table>
                 </TableContainer>
             </div>
-            <div className='ml-4 w-[45%]'>
+            <div className='ml-8 w-[50%]  border border-gray-500 p-4'>
                {
                    normalization &&
                    <>
@@ -300,7 +307,7 @@ export default function AHPTable(props) {
                         >
                             2. Matrix Nilai Kriteria (Normalisasi)
                         </Typography>
-                        <TableContainer sx={{ ml: 4}}>
+                        <TableContainer>
                             <Table
                                 aria-labelledby="tableTitle"
                                 size={dense ? 'small' : 'medium'}
@@ -346,7 +353,7 @@ export default function AHPTable(props) {
             </div>
         </div>
         <div className='flex p-4 w-full'>
-            <div className='w-[45%]'>
+            <div className='w-[50%] border border-gray-500 p-4'>
                 <Typography
                     sx={{ flex: '1 1 100%', mb: 1 }}
                     variant="body1"
@@ -396,54 +403,64 @@ export default function AHPTable(props) {
                     </Table>
                 </TableContainer>
             </div>
-            <div className='ml-4 w-[45%]'>
+            <div className='flex ml-8 w-[50%] border border-gray-500 p-4'>
                {
-                   normalization &&
+                   consistencyRatio &&
                    <>
-                        <Typography
-                            sx={{ flex: '1 1 100%', mb: 1 }}
-                            variant="body1"
-                            id="tableTitle"
-                            component="div"
-                        >
-                            4. Perhitungan Rasio Konsistensi
-                        </Typography>
-                        <TableContainer sx={{ ml: 4}}>
-                            <Table
-                                aria-labelledby="tableTitle"
-                                size={dense ? 'small' : 'medium'}
+                        <div>
+                            <Typography
+                                sx={{ flex: '1 1 100%', mb: 1 }}
+                                variant="body1"
+                                id="tableTitle"
+                                component="div"
                             >
-                                <EnhancedTableHead
-                                    numSelected={selected.length}
-                                    order={order}
-                                    orderBy={orderBy}
-                                    onSelectAllClick={handleSelectAllClick}
-                                    onRequestSort={handleRequestSort}
-                                    type={'consistency_ratio'}
-                                />
-                                <TableBody>
-                                    {
-                                        consistencyRatio.map(kpi => {
-                                            return (
-                                                <>
-                                                    <TableRow
-                                                        hover
-                                                        role="checkbox"
-                                                        tabIndex={-1}
-                                                        key={kpi.LABEL}
-                                                    >
-                                                        <TableCell>{kpi.LABEL}</TableCell>
-                                                        <TableCell align='right'>{kpi.Jumlah}</TableCell>
-                                                        <TableCell align='right'>{kpi.Prioritas}</TableCell>
-                                                        <TableCell align='right'>{kpi.Hasil}</TableCell>
-                                                    </TableRow>
-                                                </>
-                                            )
-                                        })
-                                    }
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                                4. Perhitungan Rasio Konsistensi
+                            </Typography>
+                            <TableContainer>
+                                <Table
+                                    aria-labelledby="tableTitle"
+                                    size={dense ? 'small' : 'medium'}
+                                >
+                                    <EnhancedTableHead
+                                        numSelected={selected.length}
+                                        order={order}
+                                        orderBy={orderBy}
+                                        onSelectAllClick={handleSelectAllClick}
+                                        onRequestSort={handleRequestSort}
+                                        type={'consistency_ratio'}
+                                    />
+                                    <TableBody>
+                                        {
+                                            consistencyRatio.map(kpi => {
+                                                return (
+                                                    <>
+                                                        <TableRow
+                                                            hover
+                                                            role="checkbox"
+                                                            tabIndex={-1}
+                                                            key={kpi.LABEL}
+                                                        >
+                                                            <TableCell>{kpi.LABEL}</TableCell>
+                                                            <TableCell align='right'>{kpi.Jumlah}</TableCell>
+                                                            <TableCell align='right'>{kpi.Prioritas}</TableCell>
+                                                            <TableCell align='right'>{kpi.Hasil}</TableCell>
+                                                        </TableRow>
+                                                    </>
+                                                )
+                                            })
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                        <div className='ml-14 mt-5'>
+                            <div> {`Jumlah : ${jumlah}`} </div>
+                            <div> {`nKPI : ${nKpi}`} </div>
+                            <div> {`Lamda Max : ${jumlah} / ${nKpi} = ${lamdaMax.toFixed(3)}`} </div>
+                            <div> {`CI : ( ${lamdaMax.toFixed(3)} - ${nKpi} ) / ( ${nKpi} - 1) = ${ci.toFixed(3)}`} </div>
+                            <div> {`CR : ${ci.toFixed(2)} / 1.24 = ${cr.toFixed(3)}`} </div>
+                            <div> {`Konsisten : ${cr <= 0.1} `} </div>
+                        </div>
                    </>
                }
             </div>
