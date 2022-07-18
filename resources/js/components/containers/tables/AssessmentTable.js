@@ -420,27 +420,31 @@ export default function AssessmentTable(props) {
                       selected={isItemSelected}
                     >
                       {
-                          user.value.role != 'Karyawan' &&
-                            <TableCell onClick={(event) => handleClick(event, row.id)} padding="checkbox">
+                          user.value.role != 'Karyawan'  && row.sort == '1' &&
+                            <TableCell rowSpan={2} onClick={(event) => handleClick(event, row.id)} padding="checkbox">
                                 <Checkbox
                                     color="primary"
                                     checked={isItemSelected}
-                                    inputProps={{
-                                    'aria-labelledby': labelId,
-                                    }}
+                                    inputProps={{'aria-labelledby': labelId}}
                                 />
                             </TableCell>
                       }
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding={ user.value.role == 'Karyawan' ? "checkbox" : "none"}
-                        align="center"
-                      >
-                        {row.tanggal}
-                      </TableCell>
-                      <TableCell onClick={(event) => handleClick(event, row.id)} >{row.name}</TableCell>
+                      {
+                          row.sort == '1' &&
+                          <>
+                            <TableCell
+                                component="th"
+                                id={labelId}
+                                scope="row"
+                                padding={ user.value.role == 'Karyawan' ? "checkbox" : "none"}
+                                align="center"
+                                rowSpan={2}
+                            >
+                                {row.tanggal}
+                            </TableCell>
+                            <TableCell rowSpan={2} onClick={(event) => handleClick(event, row.id)} >{ row.sort == '1' && row.name}</TableCell>
+                        </>
+                      }
                       <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.karakter}</TableCell>
                       <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.absensi}</TableCell>
                       <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.teamwork}</TableCell>
@@ -450,17 +454,20 @@ export default function AssessmentTable(props) {
                       <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.nilai_akhir}</TableCell>
                       <TableCell align="right" onClick={(event) => handleClick(event, row.id)} >{row.catatan}</TableCell>
                       {
-                          user.value.role != 'Karyawan' &&
-                          <TableCell>
-                            <>
-                                <Button
-                                id='btn-showYn'
-                                onClick={(event) => handleButtonShowYn(event, row)}
-                                >
-                                <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 'Y' ? 'green' : 'gray' }}/>
-                                </Button>
-                                { row.tampilkan_hasil === 'Y' ? 'YA' : 'TIDAK' }
-                            </>
+                          user.value.role != 'Karyawan' && row.sort == '1' &&
+                          <TableCell rowSpan={2}>
+                              {
+                                  row.sort == '1' &&
+                                  <>
+                                    <Button
+                                    id='btn-showYn'
+                                    onClick={(event) => handleButtonShowYn(event, row)}
+                                    >
+                                    <CheckIcon fontSize='small' sx={{ color: row.tampilkan_hasil === 'Y' ? 'green' : 'gray' }}/>
+                                    </Button>
+                                    { row.tampilkan_hasil === 'Y' ? 'YA' : 'TIDAK' }
+                                </>
+                              }
                         </TableCell>
                       }
                     </TableRow>

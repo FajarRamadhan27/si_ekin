@@ -20,7 +20,7 @@ import Switch from '@mui/material/Switch';
 import { Alert } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InsertEmployeeModal from '../../modals/InsertEmployeeModal';
-import { assessmentShowYn, bulkShowAssessments, deleteEmployee, getAssessments, getkpiCosistencyRatio, getKpiIndex, getKpiNormalization, getKpiRowSummary } from '../../../utils/Axios';
+import { bulkShowAssessments, getkpiCosistencyRatio, getKpiIndex, getKpiNormalization, getKpiRowSummary } from '../../../utils/Axios';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import moment from 'moment';
 import { kpiIndex } from '../../../helpers/constant';

@@ -123,6 +123,7 @@ const EnhancedTableToolbar = (props) => {
 
     if (emptyKpi) {
         setFlashMessage({ type: 'warning', message: `KPI index ${emptyKpi.key} masih kosong!`})
+        return
     }
 
     createOrEditAssessment(setFlashMessage, setAssessment, employee.ID,value.format('YYYYMM'), assessments)

@@ -15,28 +15,56 @@ class AssesmentController extends Controller
      */
     public function index($period, Request $request)
     {
-        $user = DB::table('users')
-            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
-            ->select(
-                'penilaian.id',
-                'users.name',
-                'penilaian.id as penilaian_id',
-                'penilaian.karakter',
-                'penilaian.absensi',
-                'penilaian.teamwork',
-                'penilaian.pencapaian',
-                'penilaian.loyalitas',
-                'penilaian.efisiensi',
-                'penilaian.nilai_akhir',
-                'penilaian.catatan',
-                'penilaian.tampilkan_hasil',
-                'penilaian.tanggal'
-            )
-            ->where('penilaian.tanggal', '=', $period)
-            ->where('penilaian.approve_yn', '!=', 'Y' )
-            ->where('users.id', 'like', "%$request->id%")
-            ->orderBy('users.name')
-            ->get();
+        $strSql = "
+            SELECT *
+            FROM (
+                SELECT '1' sort,
+                    penilaian.id,
+                    users.name,
+                    penilaian.id as penilaian_id,
+                    penilaian.karakter,
+                    penilaian.absensi,
+                    penilaian.teamwork,
+                    penilaian.pencapaian,
+                    penilaian.loyalitas,
+                    penilaian.efisiensi,
+                    penilaian.nilai_akhir,
+                    penilaian.catatan,
+                    penilaian.tampilkan_hasil,
+                    penilaian.tanggal
+                FROM users
+                    , penilaian
+                WHERE users.id = penilaian.id_user
+                    AND penilaian.approve_yn != 'Y'
+                    AND penilaian.id_user like ?
+                    AND penilaian.tanggal = ?
+                UNION ALL
+                SELECT '2' sort,
+                    penilaian.penilaian_id id,
+                    users.name,
+                    penilaian.penilaian_id,
+                    penilaian.karakter,
+                    penilaian.absensi,
+                    penilaian.teamwork,
+                    penilaian.pencapaian,
+                    penilaian.loyalitas,
+                    penilaian.efisiensi,
+                    penilaian.nilai_akhir,
+                    '' catatan,
+                    '' tampilkan_hasil,
+                    '' tanggal
+                FROM users
+                    , nilai_akhir penilaian
+                    , penilaian nilai
+                WHERE users.id = penilaian.id_user
+                    AND penilaian.penilaian_id = nilai.id
+                    AND nilai.approve_yn != 'Y'
+                    AND penilaian.id_user like ?
+            ) A
+            ORDER BY name, penilaian_id
+        ";
+
+        $user = DB::select(str_replace("\n", "", $strSql), [$request->id.'%', $period, $request->id.'%']);
 
         return response()->json($user);
     }
@@ -381,10 +409,55 @@ class AssesmentController extends Controller
                     'pencapaian' => $request->pencapaian,
                     'loyalitas' => $request->loyalitas,
                     'efisiensi' => $request->efisiensi,
-                    'nilai_akhir' => 5,
+                    'nilai_akhir' => null,
                     'catatan' => $request->catatan,
                     'tampilkan_hasil' => 'N',
                     'approve_yn' => 'N'
+                ]
+            );
+
+        $penilaian = DB::select('select * from penilaian where tanggal = ? and id_user = ?', [$request->period, $request->user_id]);
+        $prioritasSql = "
+                SELECT MAX(case when POINT.label = 'Karakter' then POINT.Prioritas END) Karakter
+                    , MAX(case when POINT.label = 'Absensi' then POINT.Prioritas END) Absensi
+                    , MAX(case when POINT.label = 'Teamwork' then POINT.Prioritas END) Teamwork
+                    , MAX(case when POINT.label = 'Pencapaian' then POINT.Prioritas END) Pencapaian
+                    , MAX(case when POINT.label = 'Loyalitas' then POINT.Prioritas END) Loyalitas
+                    , MAX(case when POINT.label = 'Efisiensi' then POINT.Prioritas END) Efisiensi
+                FROM
+                (SELECT 'Prioritas' join_key FROM DUAL) label
+                LEFT JOIN (
+                    SELECT 'Prioritas' join_key
+                    , MST.LABEL
+                    , ROUND((SELECT POINT FROM kpi_point_summary sum WHERE sum.TYPE = 'MATRIX_NORMALIZATION' AND sum.KEY = mst.LABEL) / 6, 3) Prioritas
+                FROM mst_kpi_index MST
+                ) POINT
+                ON label.join_key = POINT.join_key";
+
+        $prioritas = DB::select(str_replace("\n", "", $prioritasSql), []);
+
+        $naKarakter = $penilaian[0]->karakter * $prioritas[0]->Karakter;
+        $naAbsensi = $penilaian[0]->absensi * $prioritas[0]->Absensi;
+        $naTeamwork = $penilaian[0]->teamwork * $prioritas[0]->Teamwork;
+        $naPencapaian = $penilaian[0]->pencapaian * $prioritas[0]->Pencapaian;
+        $naLoyalitas = $penilaian[0]->loyalitas * $prioritas[0]->Loyalitas;
+        $naEfisiensi = $penilaian[0]->efisiensi * $prioritas[0]->Efisiensi;
+        $nilaiAKhir = $naKarakter + $naAbsensi + $naTeamwork + $naPencapaian + $naLoyalitas + $naEfisiensi;
+
+        DB::table('nilai_akhir')
+            ->updateOrInsert(
+                [
+                    'penilaian_id' => $penilaian[0]->id,
+                ],
+                [
+                    'id_user' => $penilaian[0]->id_user,
+                    'karakter' => $naKarakter,
+                    'absensi' => $naAbsensi,
+                    'teamwork' => $naTeamwork,
+                    'pencapaian' => $naPencapaian,
+                    'loyalitas' => $naLoyalitas,
+                    'efisiensi' => $naEfisiensi,
+                    'nilai_akhir' => $nilaiAKhir
                 ]
             );
 
