@@ -61,7 +61,7 @@ class AssesmentController extends Controller
                     AND nilai.approve_yn != 'Y'
                     AND penilaian.id_user like ?
             ) A
-            ORDER BY name, penilaian_id
+            ORDER BY name, penilaian_id, sort
         ";
 
         $user = DB::select(str_replace("\n", "", $strSql), [$request->id.'%', $period, $request->id.'%']);
@@ -305,28 +305,56 @@ class AssesmentController extends Controller
      */
     public function assessmentsApproval($period, Request $request)
     {
-        $user = DB::table('users')
-            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
-            ->select(
-                'penilaian.id',
-                'users.name',
-                'penilaian.id as penilaian_id',
-                'penilaian.karakter',
-                'penilaian.absensi',
-                'penilaian.teamwork',
-                'penilaian.pencapaian',
-                'penilaian.loyalitas',
-                'penilaian.efisiensi',
-                'penilaian.nilai_akhir',
-                'penilaian.catatan',
-                'penilaian.approve_yn',
-                'penilaian.tanggal'
-            )
-            ->where('penilaian.tanggal', '=', $period)
-            ->where('penilaian.tampilkan_hasil', '=', 'Y')
-            ->where('users.id', 'like', "%$request->id%")
-            ->orderBy('users.name')
-            ->get();
+        $strSql = "
+            SELECT *
+            FROM (
+                SELECT '1' sort,
+                    penilaian.id,
+                    users.name,
+                    penilaian.id as penilaian_id,
+                    penilaian.karakter,
+                    penilaian.absensi,
+                    penilaian.teamwork,
+                    penilaian.pencapaian,
+                    penilaian.loyalitas,
+                    penilaian.efisiensi,
+                    penilaian.nilai_akhir,
+                    penilaian.catatan,
+                    penilaian.approve_yn,
+                    penilaian.tanggal
+                FROM users
+                    , penilaian
+                WHERE users.id = penilaian.id_user
+                    AND penilaian.tampilkan_hasil = 'Y'
+                    AND penilaian.id_user like ?
+                    AND penilaian.tanggal = ?
+                UNION ALL
+                SELECT '2' sort,
+                    penilaian.penilaian_id id,
+                    users.name,
+                    penilaian.penilaian_id,
+                    penilaian.karakter,
+                    penilaian.absensi,
+                    penilaian.teamwork,
+                    penilaian.pencapaian,
+                    penilaian.loyalitas,
+                    penilaian.efisiensi,
+                    penilaian.nilai_akhir,
+                    '' catatan,
+                    '' approve_yn,
+                    '' tanggal
+                FROM users
+                    , nilai_akhir penilaian
+                    , penilaian nilai
+                WHERE users.id = penilaian.id_user
+                    AND penilaian.penilaian_id = nilai.id
+                    AND nilai.tampilkan_hasil = 'Y'
+                    AND penilaian.id_user like ?
+            ) A
+            ORDER BY name, penilaian_id, sort
+        ";
+
+        $user = DB::select(str_replace("\n", "", $strSql), [$request->id.'%', $period, $request->id.'%']);
 
         return response()->json($user);
     }

@@ -421,8 +421,8 @@ export default function ApprovalTable(props) {
                       onClick={(event) => handleClick(event, row.id)}
                     >
                       {
-                          user.value.role == 'Owner' &&
-                            <TableCell onClick={(event) => handleClick(event, row.id)} padding="checkbox">
+                          user.value.role == 'Owner' && row.sort == '1' &&
+                            <TableCell rowSpan={2} onClick={(event) => handleClick(event, row.id)} padding="checkbox">
                                 <Checkbox
                                     color="primary"
                                     checked={isItemSelected}
@@ -432,16 +432,22 @@ export default function ApprovalTable(props) {
                                 />
                             </TableCell>
                       }
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        align='center'
-                        padding={user.value.role == "Owner" ? "none" : "checkbox"}
-                      >
-                        {row.tanggal}
-                      </TableCell>
-                      <TableCell >{row.name}</TableCell>
+                      {
+                          row.sort == '1' &&
+                            <>
+                                <TableCell
+                                    component="th"
+                                    id={labelId}
+                                    scope="row"
+                                    align='center'
+                                    padding={user.value.role == "Owner" ? "none" : "checkbox"}
+                                    rowSpan={2}
+                                >
+                                    {row.tanggal}
+                                </TableCell>
+                                <TableCell rowSpan={2} onClick={(event) => handleClick(event, row.id)} >{ row.sort == '1' && row.name}</TableCell>
+                            </>
+                      }
                       <TableCell align='center'>{row.karakter}</TableCell>
                       <TableCell align='center'>{row.absensi}</TableCell>
                       <TableCell align='center'>{row.teamwork}</TableCell>
@@ -451,8 +457,8 @@ export default function ApprovalTable(props) {
                       <TableCell align='center'>{row.nilai_akhir}</TableCell>
                       <TableCell align='center'>{row.catatan}</TableCell>
                       {
-                          user.value.role == 'Owner' &&
-                            <TableCell>
+                          user.value.role == 'Owner' && row.sort == '1' &&
+                            <TableCell rowSpan={2}>
                                 <Button
                                 id='btn-showYn'
                                 onClick={(event) => handleButtonApproveYn(event, row)}
