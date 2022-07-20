@@ -221,7 +221,7 @@ export default function AHPTable(props) {
     let jumlah = consistencyRatio[6].Hasil
     let nKpi = 6
     let lamdaMax = jumlah / nKpi
-    let ci = (lamdaMax - nKpi) / nKpi - 1
+    let ci = (lamdaMax - nKpi) / (nKpi - 1)
     let cr = ci / 1.24
 
   const handleChangeDense = (event) => {
