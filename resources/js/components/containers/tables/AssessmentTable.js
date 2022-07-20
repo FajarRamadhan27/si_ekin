@@ -416,7 +416,7 @@ export default function AssessmentTable(props) {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id}
+                      key={index}
                       selected={isItemSelected}
                     >
                       {

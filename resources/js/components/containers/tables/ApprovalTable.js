@@ -416,7 +416,7 @@ export default function ApprovalTable(props) {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id}
+                      key={index}
                       selected={isItemSelected}
                       onClick={(event) => handleClick(event, row.id)}
                     >
