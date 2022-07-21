@@ -60,11 +60,12 @@ class AssesmentController extends Controller
                     AND penilaian.penilaian_id = nilai.id
                     AND nilai.approve_yn != 'Y'
                     AND penilaian.id_user like ?
+                    AND nilai.tanggal = ?
             ) A
             ORDER BY name, penilaian_id, sort
         ";
 
-        $user = DB::select(str_replace("\n", "", $strSql), [$request->id.'%', $period, $request->id.'%']);
+        $user = DB::select(str_replace("\n", "", $strSql), [$request->id.'%', $period, $request->id.'%', $period]);
 
         return response()->json($user);
     }
@@ -350,11 +351,12 @@ class AssesmentController extends Controller
                     AND penilaian.penilaian_id = nilai.id
                     AND nilai.tampilkan_hasil = 'Y'
                     AND penilaian.id_user like ?
+                    AND nilai.tanggal = ?
             ) A
             ORDER BY name, penilaian_id, sort
         ";
 
-        $user = DB::select(str_replace("\n", "", $strSql), [$request->id.'%', $period, $request->id.'%']);
+        $user = DB::select(str_replace("\n", "", $strSql), [$request->id.'%', $period, $request->id.'%', $period]);
 
         return response()->json($user);
     }
