@@ -282,19 +282,28 @@ class AssesmentController extends Controller
      */
     public function getRank($period)
     {
-        $user = DB::table('users')
-            ->leftJoin('penilaian', 'users.id', '=', 'penilaian.id_user')
-            ->select(
-                'penilaian.id',
-                'users.name',
-                'users.jabatan',
-                'penilaian.tanggal',
-                'penilaian.nilai_akhir'
-            )
-            ->where('penilaian.approve_yn', '=', 'Y')
-            ->where('penilaian.tanggal', '=', $period)
-            ->orderBy('penilaian.nilai_akhir', 'desc')
-            ->get();
+        $strSql = "
+            SELECT  @ROW_NUM:=@ROW_NUM+1 AS rank
+                , MAIN.*
+            FROM (
+                SELECT p.id
+                    , u.name
+                    , u.jabatan
+                    , p.tanggal
+                    , n.nilai_akhir
+                FROM users U
+                    LEFT join penilaian P
+                        ON u.id = p.id_user
+                    LEFT join nilai_akhir n
+                        ON p.id = n.penilaian_id
+                WHERE p.tanggal = ?
+                    AND p.approve_yn = 'Y'
+                ORDER BY n.nilai_akhir desc
+            ) MAIN";
+
+        DB::statement(DB::raw('set @ROW_NUM := 0'));
+        $user = DB::select(str_replace("\n", "", $strSql), [$period]);
+
 
         return response()->json($user);
     }

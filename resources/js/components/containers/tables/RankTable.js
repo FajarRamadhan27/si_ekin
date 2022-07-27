@@ -116,7 +116,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={'left'}
+            align={'center'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -366,19 +366,20 @@ export default function RankTable(props) {
                       key={row.id}
                       selected={isItemSelected}
                     >
-                      <TableCell>{row.id}</TableCell>
+                      <TableCell align='center'>{row.id}</TableCell>
                       <TableCell
                         component="th"
                         id={labelId}
                         scope="row"
                         padding="none"
+                        align='center'
                       >
                         {row.tanggal}
                       </TableCell>
-                      <TableCell>{index + 1}</TableCell>
+                      <TableCell align='center'>{row.rank}</TableCell>
                       <TableCell>{row.name}</TableCell>
                       <TableCell>{row.jabatan}</TableCell>
-                      <TableCell>{row.nilai_akhir}</TableCell>
+                      <TableCell align='right'>{row.nilai_akhir}</TableCell>
                     </TableRow>
                   );
                 })}
